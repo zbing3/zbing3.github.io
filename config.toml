@@ -1,4 +1,4 @@
-baseURL = "http://opslinux.com/"
+baseURL = "http://zbing3.github.com/"
 languageCode = "zh-CN"
 title = "创e - 皓禹"
 preserveTaxonomyNames = true # 默认分类不转化小写
