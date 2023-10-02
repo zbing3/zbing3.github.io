@@ -1,9 +1,10 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
         <title>创e - 皓禹</title>
-        <link>http://zbing3.github.com/</link>
+        <link>https://zbing3.github.com/</link>
         <description>一切伟大的行动和思想都有一个微不足道的开始</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Sat, 29 Feb 2020 15:04:07 &#43;0000</lastBuildDate>
-            <atom:link href="http://zbing3.github.com/index.xml" rel="self" type="application/rss+xml" />
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>zbing3@gmail.com (皓禹)</managingEditor>
+            <webMaster>zbing3@gmail.com (皓禹)</webMaster><lastBuildDate>Sat, 29 Feb 2020 15:04:07 &#43;0000</lastBuildDate>
+            <atom:link href="https://zbing3.github.com/index.xml" rel="self" type="application/rss+xml" />
         </channel>
 </rss>
