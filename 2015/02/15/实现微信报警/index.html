@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>实现微信报警 - 创e - 皓禹</title><meta name="Description" content="一切伟大的行动和思想都有一个微不足道的开始"><meta property="og:title" content="实现微信报警" />
+<meta property="og:description" content="最近公司业务上涨，报警频频发生，刚买的短信接口已经用一半了，这么下去肯定不是办法。现在都是移动互联网时代了，肯定得想点新办法，看着手机我想起" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://zbing3.github.com/2015/02/15/%E5%AE%9E%E7%8E%B0%E5%BE%AE%E4%BF%A1%E6%8A%A5%E8%AD%A6/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2015-02-15T10:39:45+00:00" />
+<meta property="article:modified_time" content="2015-02-15T10:39:45+00:00" /><meta property="og:site_name" content="My cool site" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="实现微信报警"/>
+<meta name="twitter:description" content="最近公司业务上涨，报警频频发生，刚买的短信接口已经用一半了，这么下去肯定不是办法。现在都是移动互联网时代了，肯定得想点新办法，看着手机我想起"/>
+<meta name="application-name" content="My cool site">
+<meta name="apple-mobile-web-app-title" content="My cool site"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://zbing3.github.com/2015/02/15/%E5%AE%9E%E7%8E%B0%E5%BE%AE%E4%BF%A1%E6%8A%A5%E8%AD%A6/" /><link rel="prev" href="http://zbing3.github.com/2015/01/29/python%E9%80%9A%E8%BF%87telnet%E8%BF%9E%E6%8E%A5%E5%8D%8E%E4%B8%BA%E8%AE%BE%E5%A4%87/" /><link rel="next" href="http://zbing3.github.com/2015/03/12/python%E4%B8%AD%E9%AA%8C%E8%AF%81ip%E7%9A%84%E6%9C%89%E6%95%88%E6%80%A7%E6%AD%A3%E5%88%99/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "实现微信报警",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "http:\/\/zbing3.github.com\/2015\/02\/15\/%E5%AE%9E%E7%8E%B0%E5%BE%AE%E4%BF%A1%E6%8A%A5%E8%AD%A6\/"
+        },"genre": "post","keywords": "python","wordcount":  1088 ,
+        "url": "http:\/\/zbing3.github.com\/2015\/02\/15\/%E5%AE%9E%E7%8E%B0%E5%BE%AE%E4%BF%A1%E6%8A%A5%E8%AD%A6\/","datePublished": "2015-02-15T10:39:45+00:00","dateModified": "2015-02-15T10:39:45+00:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "皓禹"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="创e - 皓禹">My cool site</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/"> Home </a><a class="menu-item" href="/post/"> Archives </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="创e - 皓禹">My cool site</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><a class="menu-item" href="/" title="">Home</a><a class="menu-item" href="/post/" title="">Archives</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><main class="main">
+                <div class="container"><div class="page single special"><h1 class="single-title animate__animated animate__pulse animate__faster">实现微信报警</h1><div class="content" id="content"><p>最近公司业务上涨，报警频频发生，刚买的短信接口已经用一半了，这么下去肯定不是办法。现在都是移动互联网时代了，肯定得想点新办法，看着手机我想起了微信，这货要是能实现报警，问题不就解决了么？</p>
+<p>我抱着试一试的态度，在网上查找了一下，结果病就治好了…… 呃…… 电视广告看多了。 在网上查到了微信实现报警的方案，以我的理解分两种：</p>
+<p>1.公众号，公众号使用模板信息可以给用户发送10w调每天的信息
+2.企业号，给员工无限制的发送信息:</p>
+<p>企业号的功能：</p>
+<p>企业号适用于企业与员工或上下游供应链之间的沟通。</p>
+<p>1、企业可以主动发消息给员工，消息量不受限制。</p>
+<p>2、企业号出现在微信会话列表首层，在通讯录中有单独的分类。</p>
+<p>3、可以自定义菜单。</p>
+<p>4、拥有多个子号。</p>
+<p>5、更加关注与安全，需要双方认证。</p>
+<p>作为一个强迫症控，那肯定得用企业号啊，这里需要老板的支持，企业号不是自己能申请的，还好我老板高瞻远瞩，已经申请好了。（嘻嘻，希望老板能看到）</p>
+<h2 id="对企业号进行配置">对企业号进行配置：</h2>
+<p>扫描二维码进行登录：<a href="https://qy.weixin.qq.com/" target="_blank" rel="noopener noreffer ">https://qy.weixin.qq.com/</a>
+<!-- raw HTML omitted --></p>
+<h2 id="配置企业号">配置企业号</h2>
+<p>登陆以后新建应用：
+<!-- raw HTML omitted --></p>
+<p>输入应用名称为监控报警就新建了一个叫做监控报警的应用，新建完成后，进入【应用中心】查看应用id， 这里后面要用。</p>
+<p>设置管理员：</p>
+<p>指定应用的管理员。点击设置 -&gt; 权限管理 -&gt; 管理 -&gt; 新建管理组 -&gt; 添加管理员和权限。然后就会获得corpid 和 sceret。这里后面也要用。</p>
+<h2 id="开发">开发</h2>
+<p>1、阅读开发文档。文档位置：<a href="http://qydev.weixin.qq.com/wiki/index.php?title=%E9%A6%96%E9%A1%B5" title="%E9%A6%96%E9%A1%B5" target="_blank" rel="noopener noreffer ">微信开发文档</a></p>
+<p>我只读了建立连接、管理通讯录、发送消息。好了，发个报警够了，很简单。</p>
+<p>2、建立连接获取access_token。</p>
+<p>这个token是一个有有效时间的密钥用于后续操作认证。</p>
+<p>Https请求方式: GET</p>
+<p><a href="https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid=id&amp;amp;corpsecret=secrect" target="_blank" rel="noopener noreffer ">https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid=id&amp;corpsecret=secrect</a></p>
+<p>正常情况下就会反馈一个json并得到access_token</p>
+<p>根据文档获取玩access_token后就可以发送消息了。</p>
+<p>我写的脚本代码如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">#!/usr/bin/env python
+</span></span><span class="line"><span class="cl"># coding:utf-8
+</span></span><span class="line"><span class="cl">import sys
+</span></span><span class="line"><span class="cl">import urllib2
+</span></span><span class="line"><span class="cl">import time
+</span></span><span class="line"><span class="cl">import json
+</span></span><span class="line"><span class="cl">import requests
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">reload(sys)
+</span></span><span class="line"><span class="cl">sys.setdefaultencoding(&#39;utf-8&#39;)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">title = sys.argv[2]   # 位置参数获取title 适用于zabbix
+</span></span><span class="line"><span class="cl">content = sys.argv[3] # 位置参数获取content 适用于zabbix
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">class Token(object):
+</span></span><span class="line"><span class="cl">    # 获取token
+</span></span><span class="line"><span class="cl">    def __init__(self, corpid, corpsecret):
+</span></span><span class="line"><span class="cl">        self.baseurl = &#39;https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid={0}&amp;corpsecret={1}&#39;.format(
+</span></span><span class="line"><span class="cl">            corpid, corpsecret)
+</span></span><span class="line"><span class="cl">        self.expire_time = sys.maxint
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def get_token(self):
+</span></span><span class="line"><span class="cl">        if self.expire_time &gt; time.time():
+</span></span><span class="line"><span class="cl">            request = urllib2.Request(self.baseurl)
+</span></span><span class="line"><span class="cl">            response = urllib2.urlopen(request)
+</span></span><span class="line"><span class="cl">            ret = response.read().strip()
+</span></span><span class="line"><span class="cl">            ret = json.loads(ret)
+</span></span><span class="line"><span class="cl">            if &#39;errcode&#39; in ret.keys():
+</span></span><span class="line"><span class="cl">                print &gt;&gt; ret[&#39;errmsg&#39;], sys.stderr
+</span></span><span class="line"><span class="cl">                sys.exit(1)
+</span></span><span class="line"><span class="cl">            self.expire_time = time.time() + ret[&#39;expires_in&#39;]
+</span></span><span class="line"><span class="cl">            self.access_token = ret[&#39;access_token&#39;]
+</span></span><span class="line"><span class="cl">        return self.access_token
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def send_msg(title, content):
+</span></span><span class="line"><span class="cl">    # 发送消息
+</span></span><span class="line"><span class="cl">    corpid = &#34;&#34;  # 填写自己应用的
+</span></span><span class="line"><span class="cl">    corpsecret = &#34;&#34; # 填写自己应用的
+</span></span><span class="line"><span class="cl">    qs_token = Token(corpid=corpid, corpsecret=corpsecret).get_token()
+</span></span><span class="line"><span class="cl">    url = &#34;https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token={0}&#34;.format(
+</span></span><span class="line"><span class="cl">        qs_token)
+</span></span><span class="line"><span class="cl">    payload = {
+</span></span><span class="line"><span class="cl">        &#34;touser&#34;: &#34;user1|user2&#34;,
+</span></span><span class="line"><span class="cl">        &#34;msgtype&#34;: &#34;text&#34;,
+</span></span><span class="line"><span class="cl">        &#34;agentid&#34;: &#34;3&#34;,
+</span></span><span class="line"><span class="cl">        &#34;text&#34;: {
+</span></span><span class="line"><span class="cl">                   &#34;content&#34;: &#34;标题:{0}\n 内容:{1}&#34;.format(title, content)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        },
+</span></span><span class="line"><span class="cl">        &#34;safe&#34;: &#34;0&#34;
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">    ret = requests.post(url, data=json.dumps(payload, ensure_ascii=False))
+</span></span><span class="line"><span class="cl">    print ret.json()
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">if __name__ == &#39;__main__&#39;:
+</span></span><span class="line"><span class="cl">    # print title, content
+</span></span><span class="line"><span class="cl">    send_msg(title, content)
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="参考文章">参考文章：</h2>
+<p><a href="http://www.anbooks.cn/topic/4145905736700.html" target="_blank" rel="noopener noreffer ">微信公众平台企业号用于监控报警探究（python版本）</a></p>
+</div></div></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.119.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022 - 2023</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">皓禹</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":50},"comment":{}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>
