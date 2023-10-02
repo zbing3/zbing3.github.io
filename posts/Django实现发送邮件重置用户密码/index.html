@@ -220,9 +220,9 @@
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">{% extends admin/base_site.html %} 
-</span></span><span class="line"><span class="cl">改为
-</span></span><span class="line"><span class="cl">{% extends base.html %}
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="p">{</span><span class="o">%</span> <span class="n">extends</span> <span class="n">admin</span><span class="o">/</span><span class="n">base_site</span><span class="o">.</span><span class="n">html</span> <span class="o">%</span><span class="p">}</span> 
+</span></span><span class="line"><span class="cl"><span class="n">改为</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span><span class="o">%</span> <span class="n">extends</span> <span class="n">base</span><span class="o">.</span><span class="n">html</span> <span class="o">%</span><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>这样做完还是不能用的，因为需要base.html文件:</p>
@@ -238,14 +238,14 @@
 </span><span class="lnt">8
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">&lt;html&gt;
-</span></span><span class="line"><span class="cl">&lt;head&gt;
-</span></span><span class="line"><span class="cl">    &lt;title&gt;{% block title %}{% endblock title %}&lt;/title&gt;
-</span></span><span class="line"><span class="cl">&lt;/head&gt;
-</span></span><span class="line"><span class="cl">&lt;body&gt;
+<pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">title</span><span class="p">&gt;</span>{% block title %}{% endblock title %}<span class="p">&lt;/</span><span class="nt">title</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
 </span></span><span class="line"><span class="cl">    {% block content %}{% endblock content %}
-</span></span><span class="line"><span class="cl">&lt;/body&gt;
-</span></span><span class="line"><span class="cl">&lt;/html&gt;
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><h2 id="测试">测试</h2>
