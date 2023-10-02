@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>zabbix监控mongoDB - 创e - 皓禹</title><meta name="Description" content="一切伟大的行动和思想都有一个微不足道的开始"><meta property="og:title" content="zabbix监控mongoDB" />
+<meta property="og:description" content="zabbix监控mongoDB 推荐文档： 官方推荐：http://docs.mongodb.org/manual/administration" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://zbing3.github.com/posts/zabbix%E7%9B%91%E6%8E%A7mongoDB/" /><meta property="og:image" content="https://zbing3.github.com/logo.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2013-09-09T00:00:00+00:00" />
+<meta property="article:modified_time" content="2013-09-09T00:00:00+00:00" /><meta property="og:site_name" content="创e - 皓禹" />
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://zbing3.github.com/logo.png"/>
+
+<meta name="twitter:title" content="zabbix监控mongoDB"/>
+<meta name="twitter:description" content="zabbix监控mongoDB 推荐文档： 官方推荐：http://docs.mongodb.org/manual/administration"/>
+<meta name="application-name" content="My cool site">
+<meta name="apple-mobile-web-app-title" content="My cool site"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://zbing3.github.com/posts/zabbix%E7%9B%91%E6%8E%A7mongoDB/" /><link rel="prev" href="https://zbing3.github.com/posts/%E4%BD%BF%E7%94%A8github%E5%92%8Cpelican%E6%90%AD%E5%BB%BA%E6%9C%AC%E7%AB%99%E5%8D%9A%E5%AE%A2/" /><link rel="next" href="https://zbing3.github.com/posts/%E4%BD%BF%E7%94%A8Vagrant%E6%89%93%E9%80%A0%E4%BD%A0%E7%9A%84%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "zabbix监控mongoDB",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/zbing3.github.com\/posts\/zabbix%E7%9B%91%E6%8E%A7mongoDB\/"
+        },"genre": "posts","keywords": "zabbix","wordcount":  794 ,
+        "url": "https:\/\/zbing3.github.com\/posts\/zabbix%E7%9B%91%E6%8E%A7mongoDB\/","datePublished": "2013-09-09T00:00:00+00:00","dateModified": "2013-09-09T00:00:00+00:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "皓禹"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="创e - 皓禹">创e - 皓禹</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="创e - 皓禹">创e - 皓禹</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">zabbix监控mongoDB</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>皓禹</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2013-09-09">2013-09-09</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;794 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;2 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="true">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents"></nav></div>
+            </div><div class="content" id="content"><h1 id="zabbix监控mongodb">zabbix监控mongoDB</h1>
+<p>推荐文档：</p>
+<p>官方推荐：http://docs.mongodb.org/manual/administration/monitoring/</p>
+<p>因我使用的是zabbix.所以选择：</p>
+<p><a href="https://code.google.com/p/mikoomi/wiki/03" target="_blank" rel="noopener noreffer ">https://code.google.com/p/mikoomi/wiki/03</a></p>
+<p>插件下载地址：</p>
+<p><a href="http://mikoomi.googlecode.com/svn/plugins/MongoDB%20Plugin/" target="_blank" rel="noopener noreffer ">http://mikoomi.googlecode.com/svn/plugins/MongoDB%20Plugin/</a></p>
+<p>学习地址：</p>
+<p><a href="https://blog.serverdensity.com/mongodb-monitoring-db-serverstatus/" target="_blank" rel="noopener noreffer ">https://blog.serverdensity.com/mongodb-monitoring-db-serverstatus/</a></p>
+<p><a href="http://www.yaukb.com/2012/05/zabbix_mongodb/" target="_blank" rel="noopener noreffer ">http://www.yaukb.com/2012/05/zabbix_mongodb/</a></p>
+<p><strong>1.在Zabbix Server上安装php MongoDB驱动：</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">[root@localhost conf.d]# pecl install mongo
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">WARNING: channel “pecl.php.net” has updated its protocols, use “pecl channel-update pecl.php.net” to update
+</span></span><span class="line"><span class="cl">downloading mongo-1.4.3.tgz …
+</span></span><span class="line"><span class="cl">Starting to download mongo-1.4.3.tgz (140,481 bytes)
+</span></span><span class="line"><span class="cl">…………………………done: 140,481 bytes
+</span></span><span class="line"><span class="cl">84 source files, building
+</span></span><span class="line"><span class="cl">running: phpize
+</span></span><span class="line"><span class="cl">Configuring for:
+</span></span><span class="line"><span class="cl">PHP Api Version:         20100412
+</span></span><span class="line"><span class="cl">Zend Module Api No:      20100525
+</span></span><span class="line"><span class="cl">Zend Extension Api No:   220100525
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">……
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Build process completed successfully
+</span></span><span class="line"><span class="cl">Installing ‘/usr/lib64/php/modules/mongo.so’
+</span></span><span class="line"><span class="cl">install ok: channel://pecl.php.net/mongo-1.4.3
+</span></span><span class="line"><span class="cl">configuration option “php_ini” is not set to php.ini location
+</span></span><span class="line"><span class="cl">You should add “extension=mongo.so” to php.ini
+</span></span><span class="line"><span class="cl">You have new mail in /var/spool/mail/root
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">[root@localhost conf.d]# vim /etc/php.ini
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">[root@localhost conf.d]# /etc/init.d/httpd reload
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">[root@localhost conf.d]# php -m |grep mongo
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">mongo
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>2.下载：</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">[root@localhost externalscripts]# pwd
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">/etc/zabbix/externalscripts
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">[root@localhost externalscripts]# wget http://mikoomi.googlecode.com/svn/plugins/MongoDB%20Plugin/mikoomi-mongodb-plugin.php
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">[root@localhost externalscripts]# wget http://mikoomi.googlecode.com/svn/plugins/MongoDB%20Plugin/mikoomi-mongodb-plugin.sh
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>3.导入模板 建立主机：</strong></p>
+<p>将<code>MongoDB_Plugin_template_export.xml</code>导入到zabbix中
+修改<code>&quot;Miscellaneous: Data Collector&quot;</code>监控项的key值，因默认提供的值有错误：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">mikoomi-mongodb-plugin.sh[&#34;--&#34;, &#34;-h&#34;, &#34;{$MONGODB_HOSTNAME}&#34;, &#34;-p&#34;, &#34;{$MONGODB_PORT}&#34;, &#34;-z&#34;, &#34;{$MONGODB_ZABBIX_NAME}&#34;]
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>在zabbix里建立主机，定义宏：</p>
+<p>{$MONGODB_HOSTNAME} = 10.0.199.30   #即ip地址</p>
+<p>{$MONGODB_PORT} = 27017 #监控mongdb的端口号</p>
+<p>{$MONGODB_ZABBIX_NAME} =MongDB1 #hostname 就是主机名 不要写显示名 这样会接受不到数据 一定是hostname</p>
+<p>然后给主机连接上模板即可。</p>
+<p><strong>4.测试：</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">[root@localhost externalscripts]# ./mikoomi-mongodb-plugin.sh -D -h10.0.199.30 -p27017 -z MongDB1
+</span></span><span class="line"><span class="cl">0
+</span></span><span class="line"><span class="cl">[root@localhost externalscripts]# less /tmp/mikoomi-mongodb-plugin.php_MongoDB1.log
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">mikoomi-mongodb-plugin.php:Successfully connected to mongoDB using connect string root:passworda@MongDB1:27017
+</span></span><span class="line"><span class="cl">zabbix_sender [8413]: Warning: [line 66] ‘Key value’ required
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">zabbix_sender [8413]: Warning: [line 68] ‘Key value’ required
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">zabbix_sender [8414]: DEBUG: answer [{
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">&lt;div class=&#34;highlight&#34;&gt;&lt;pre&gt;    &amp;quot;response&amp;quot;:&amp;quot;success&amp;quot;,
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    &amp;quot;info&amp;quot;:&amp;quot;Processed 58 Failed 13 Total 71 Seconds spent 0.001618&amp;quot;}]
+</span></span><span class="line"><span class="cl">&lt;/pre&gt;&lt;/div&gt;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">sent: 71; skipped: 2; total: 73
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">/tmp/mikoomi-mongodb-plugin.php_MongDB1.log (END)
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><code>若出现  Failed 的数目和 Total数目相等的话 应该是  mikoomi-mongodb-plugin.sh 后面-z参数的 hostname没写对 这个hostname是zabbix主机的hostname即主机名 而不是显示名</code></p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2013-09-09</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/posts/zabbix%E7%9B%91%E6%8E%A7mongoDB/index.md" target="_blank">Read Markdown</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://zbing3.github.com/posts/zabbix%E7%9B%91%E6%8E%A7mongoDB/" data-title="zabbix监控mongoDB" data-hashtags="zabbix"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://zbing3.github.com/posts/zabbix%E7%9B%91%E6%8E%A7mongoDB/" data-hashtag="zabbix"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://zbing3.github.com/posts/zabbix%E7%9B%91%E6%8E%A7mongoDB/" data-title="zabbix监控mongoDB"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="https://zbing3.github.com/posts/zabbix%E7%9B%91%E6%8E%A7mongoDB/" data-title="zabbix监控mongoDB"><i data-svg-src="/lib/simple-icons/icons/line.min.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="https://zbing3.github.com/posts/zabbix%E7%9B%91%E6%8E%A7mongoDB/" data-title="zabbix监控mongoDB"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/zabbix/">zabbix</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/%E4%BD%BF%E7%94%A8github%E5%92%8Cpelican%E6%90%AD%E5%BB%BA%E6%9C%AC%E7%AB%99%E5%8D%9A%E5%AE%A2/" class="prev" rel="prev" title="使用github和pelican搭建本站博客"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>使用github和pelican搭建本站博客</a>
+            <a href="/posts/%E4%BD%BF%E7%94%A8Vagrant%E6%89%93%E9%80%A0%E4%BD%A0%E7%9A%84%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83/" class="next" rel="next" title="使用Vagrant打造你的虚拟环境">使用Vagrant打造你的虚拟环境<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.119.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2013 - 2023</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">皓禹</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script type="text/javascript" src="/lib/autocomplete/autocomplete.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.min.js"></script><script type="text/javascript" src="/lib/lazysizes/lazysizes.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="/lib/sharer/sharer.min.js"></script><script type="text/javascript" src="/lib/katex/katex.min.js"></script><script type="text/javascript" src="/lib/katex/contrib/auto-render.min.js"></script><script type="text/javascript" src="/lib/katex/contrib/copy-tex.min.js"></script><script type="text/javascript" src="/lib/katex/contrib/mhchem.min.js"></script><script type="text/javascript" src="/lib/cookieconsent/cookieconsent.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":50},"comment":{},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

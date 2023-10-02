@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>python实现分析Nginx日志web平台 - 创e - 皓禹</title><meta name="Description" content="一切伟大的行动和思想都有一个微不足道的开始"><meta property="og:title" content="python实现分析Nginx日志web平台" />
+<meta property="og:description" content="其实项目写完好久了，一直没时间总结，正好最近离职，也不是特别忙把一些自己认为使用的项目分享一下给大家，希望能帮助到大家，即使帮助不到，我还可" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://zbing3.github.com/posts/python%E5%AE%9E%E7%8E%B0%E5%88%86%E6%9E%90Nginx%E6%97%A5%E5%BF%97web%E5%B9%B3%E5%8F%B0/" /><meta property="og:image" content="https://zbing3.github.com/logo.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2014-05-10T22:50:27+00:00" />
+<meta property="article:modified_time" content="2014-05-10T22:50:27+00:00" /><meta property="og:site_name" content="创e - 皓禹" />
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://zbing3.github.com/logo.png"/>
+
+<meta name="twitter:title" content="python实现分析Nginx日志web平台"/>
+<meta name="twitter:description" content="其实项目写完好久了，一直没时间总结，正好最近离职，也不是特别忙把一些自己认为使用的项目分享一下给大家，希望能帮助到大家，即使帮助不到，我还可"/>
+<meta name="application-name" content="My cool site">
+<meta name="apple-mobile-web-app-title" content="My cool site"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://zbing3.github.com/posts/python%E5%AE%9E%E7%8E%B0%E5%88%86%E6%9E%90Nginx%E6%97%A5%E5%BF%97web%E5%B9%B3%E5%8F%B0/" /><link rel="prev" href="https://zbing3.github.com/posts/Django-ajax-post/" /><link rel="next" href="https://zbing3.github.com/posts/%E7%AE%97%E6%B3%95%E7%9A%84%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "python实现分析Nginx日志web平台",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/zbing3.github.com\/posts\/python%E5%AE%9E%E7%8E%B0%E5%88%86%E6%9E%90Nginx%E6%97%A5%E5%BF%97web%E5%B9%B3%E5%8F%B0\/"
+        },"genre": "posts","keywords": "python, nginx日志分析","wordcount":  848 ,
+        "url": "https:\/\/zbing3.github.com\/posts\/python%E5%AE%9E%E7%8E%B0%E5%88%86%E6%9E%90Nginx%E6%97%A5%E5%BF%97web%E5%B9%B3%E5%8F%B0\/","datePublished": "2014-05-10T22:50:27+00:00","dateModified": "2014-05-10T22:50:27+00:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "皓禹"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="创e - 皓禹">创e - 皓禹</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="创e - 皓禹">创e - 皓禹</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">python实现分析Nginx日志web平台</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>皓禹</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2014-05-10">2014-05-10</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;848 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;2 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="true">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#nginx日志">Nginx日志</a></li>
+    <li><a href="#nginx日志分析处理">Nginx日志分析处理</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>其实项目写完好久了，一直没时间总结，正好最近离职，也不是特别忙把一些自己认为使用的项目分享一下给大家，希望能帮助到大家，即使帮助不到，我还可以偷偷回来看下，以便温习</p>
+<h2 id="nginx日志">Nginx日志</h2>
+<p>按日期切割log</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">mv /var/log/nginx-server.access.log /var/log/nginx/nginx-server.access_$(date -d &#34;yesterday&#34; +&#34;%Y%m%
+</span></span><span class="line"><span class="cl">d&#34;).log
+</span></span><span class="line"><span class="cl">kill -USR1 `cat /etc/nginx/logs/nginx.pid`
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>首先要明确自己的Nginx的日志格式，找到配置文件如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">log_format  main  &#39;$remote_addr - $remote_user [$time_local] &#34;$request&#34; &#39;
+</span></span><span class="line"><span class="cl">                  &#39;$status $body_bytes_sent &#34;$http_referer&#34; &#39;
+</span></span><span class="line"><span class="cl">                  &#39;&#34;$http_user_agent&#34; &#34;$http_x_forwarded_for&#34; &#34;$request_time&#34; &#34;$upstream_response_time&#34;&#39;;
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>以上是我Nginx日志的格式</p>
+<h2 id="nginx日志分析处理">Nginx日志分析处理</h2>
+<p>啥也别说了 直接上代码：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span><span class="lnt">70
+</span><span class="lnt">71
+</span><span class="lnt">72
+</span><span class="lnt">73
+</span><span class="lnt">74
+</span><span class="lnt">75
+</span><span class="lnt">76
+</span><span class="lnt">77
+</span><span class="lnt">78
+</span><span class="lnt">79
+</span><span class="lnt">80
+</span><span class="lnt">81
+</span><span class="lnt">82
+</span><span class="lnt">83
+</span><span class="lnt">84
+</span><span class="lnt">85
+</span><span class="lnt">86
+</span><span class="lnt">87
+</span><span class="lnt">88
+</span><span class="lnt">89
+</span><span class="lnt">90
+</span><span class="lnt">91
+</span><span class="lnt">92
+</span><span class="lnt">93
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">#coding=utf-8
+</span></span><span class="line"><span class="cl">import linecache
+</span></span><span class="line"><span class="cl">import re
+</span></span><span class="line"><span class="cl">import time,datetime
+</span></span><span class="line"><span class="cl">import glob
+</span></span><span class="line"><span class="cl">import os
+</span></span><span class="line"><span class="cl">import conn
+</span></span><span class="line"><span class="cl">w = &#39;&#39;&#39;112.224.65.85 - - [20/Aug/2013:00:01:02 +0800] &#34;POST /api/topic/comments HTTP/1.1&#34; 200 3804 &#34;-&#34; &#34;Corax/0.7.0 CFNetwork/609.1.4 Darwin/13.0.0&#34; &#34;-&#34; &#34;1.173&#34; &#34;0.005&#34;&#39;&#39;&#39;
+</span></span><span class="line"><span class="cl">files_dir = &#34;/home/corax/ops/data/&#34;
+</span></span><span class="line"><span class="cl">bak_dir = &#34;/home/corax/ops/data/backup&#34;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def readfile(path):
+</span></span><span class="line"><span class="cl">    filename = []
+</span></span><span class="line"><span class="cl">    files = glob.glob(path + &#39;*.log&#39;)
+</span></span><span class="line"><span class="cl">    return files
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def readtime(path):
+</span></span><span class="line"><span class="cl">    read_time = []
+</span></span><span class="line"><span class="cl">    files = glob.glob(path + &#39;*.log&#39;)
+</span></span><span class="line"><span class="cl">    print files
+</span></span><span class="line"><span class="cl">    for i in files:
+</span></span><span class="line"><span class="cl">        read_time.append(i.split(&#39;_&#39;)[1].split(&#39;.&#39;)[0])
+</span></span><span class="line"><span class="cl">    read_time = set(read_time)
+</span></span><span class="line"><span class="cl">    return read_time
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def timestamp(time_file):
+</span></span><span class="line"><span class="cl">    return time.mktime(time.strptime(time_file,&#39;%Y%b%d %H:%M:%S&#39;))
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def datestamp(date_name):
+</span></span><span class="line"><span class="cl">    return time.strptime(date_name,&#39;%Y%b%d&#39;)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def handle_log(log_file):
+</span></span><span class="line"><span class="cl">    ip = r&#34;?P&lt;ip&gt;[\d.]*&#34;
+</span></span><span class="line"><span class="cl">    date = r&#34;?P&lt;date&gt;\d+&#34;
+</span></span><span class="line"><span class="cl">    month = r&#34;?P&lt;month&gt;\w+&#34;
+</span></span><span class="line"><span class="cl">    year = r&#34;?P&lt;year&gt;\d+&#34;
+</span></span><span class="line"><span class="cl">    log_time = r&#34;?P&lt;time&gt;\S+&#34;
+</span></span><span class="line"><span class="cl">    method = r&#34;?P&lt;method&gt;\S+&#34;
+</span></span><span class="line"><span class="cl">    request = r&#34;?P&lt;request&gt;\S+&#34;
+</span></span><span class="line"><span class="cl">    status = r&#34;?P&lt;status&gt;\d+&#34;
+</span></span><span class="line"><span class="cl">    bodyBytesSent = r&#34;?P&lt;bodyBytesSent&gt;\d+&#34;
+</span></span><span class="line"><span class="cl">    refer = r&#34;&#34;&#34;?P&lt;refer&gt;
+</span></span><span class="line"><span class="cl">             [^\&#34;]*
+</span></span><span class="line"><span class="cl">             &#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">    userAgent=r&#34;&#34;&#34;?P&lt;userAgent&gt;
+</span></span><span class="line"><span class="cl">                \S*
+</span></span><span class="line"><span class="cl">               &#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">    forwardr=r&#34;&#34;&#34;?P&lt;forwardr&gt;
+</span></span><span class="line"><span class="cl">                [^\&#34;]*
+</span></span><span class="line"><span class="cl">               &#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">    request_time=r&#34;&#34;&#34;?P&lt;request_time&gt;
+</span></span><span class="line"><span class="cl">                [^\&#34;]*
+</span></span><span class="line"><span class="cl">               &#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">    response_time=r&#34;&#34;&#34;?P&lt;response_time&gt;
+</span></span><span class="line"><span class="cl">                [^\&#34;]*
+</span></span><span class="line"><span class="cl">               &#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">    p = re.compile(r&#34;(%s)\ -\ -\ \[(%s)/(%s)/(%s)\:(%s)\ [\S]+\]\ \&#34;(%s)?[\s]?(%s)?.*?\&#34;\ (%s)\ (%s)\ \&#34;(%s)\&#34;\ \&#34;(%s).*?\&#34;\ \&#34;(%s)\&#34;\ \&#34;(%s)\&#34;\ \&#34;(%s)\&#34;&#34; %(ip, date, month, year, log_time, method, request, status, bodyBytesSent, refer, userAgent, forwardr, request_time, response_time ), re.VERBOSE)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    s = time.time()
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    log_list = []
+</span></span><span class="line"><span class="cl">    for l in log_file:
+</span></span><span class="line"><span class="cl">        f = open(l,&#39;r&#39;)
+</span></span><span class="line"><span class="cl">        file_all = f.read()
+</span></span><span class="line"><span class="cl">        m = re.findall(p,file_all)
+</span></span><span class="line"><span class="cl">        for g in m:
+</span></span><span class="line"><span class="cl">            time_all = &#39;%s%s%s %s&#39;%(g[3], g[2], g[1], g[4])
+</span></span><span class="line"><span class="cl">            time_format = timestamp(time_all)
+</span></span><span class="line"><span class="cl">            date = time.strftime(&#34;%Y%m%d&#34;,datestamp(&#39;%s%s%s&#39;%(g[3], g[2], g[1])))
+</span></span><span class="line"><span class="cl">            hour = g[4].split(&#34;:&#34;)[0]
+</span></span><span class="line"><span class="cl">            # print date,hour
+</span></span><span class="line"><span class="cl">            if g[12] != &#34;-&#34;:
+</span></span><span class="line"><span class="cl">                req_time = float(g[12])
+</span></span><span class="line"><span class="cl">            else:
+</span></span><span class="line"><span class="cl">                req_time = None
+</span></span><span class="line"><span class="cl">            if g[13] != &#34;-&#34; and len(g[13])&lt;=5:
+</span></span><span class="line"><span class="cl">                res_time = float(g[13])
+</span></span><span class="line"><span class="cl">            else:
+</span></span><span class="line"><span class="cl">                res_time =  None
+</span></span><span class="line"><span class="cl">            log = {&#39;ip&#39;:g[0],&#39;time&#39;:time_format,&#39;method&#39;:g[5],&#39;request&#39;:g[6],&#39;status&#39;:g[7],&#39;bodyBytesSent&#39;:g[8],&#39;refer&#39;:g[9],&#39;userAgent&#39;:g[10],&#39;forwardr&#39;:g[11],&#39;request_time&#39;:req_time,&#39;response_time&#39;:res_time,&#39;date&#39;:int(date),&#39;hour&#39;:int(hour)}
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            conn.db.log.insert(log)
+</span></span><span class="line"><span class="cl">        f.close()
+</span></span><span class="line"><span class="cl">        print &#34;mv %s %s &#34;%(l,bak_dir)
+</span></span><span class="line"><span class="cl">        os.system(&#34;mv %s %s &#34;%(l,bak_dir))
+</span></span><span class="line"><span class="cl">    print time.time() - s
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">if __name__ == &#39;__main__&#39;:
+</span></span><span class="line"><span class="cl">    lf = readfile(files_dir)
+</span></span><span class="line"><span class="cl">    print lf
+</span></span><span class="line"><span class="cl">    read_time = readtime(files_dir)
+</span></span><span class="line"><span class="cl">    print read_time
+</span></span><span class="line"><span class="cl">    handle_log(lf)
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>我们书接上回，对上面的代码进行一下梳理：</p>
+<p>w变量存了一个测试的Nginx日志条目,readfile()函数是读取日志文件，然后返回文件的路径，readtime()函数是获取日期，handle_log()函数是分析日志的函数，对于每个日志段，用正则精心匹配筛选出来，然后就是入库。这里面试写入到了MongDB中。</p>
+<p>好了，日志都放到NOSQL当中了，接下来就是分析的问题，这个就是仁者见仁智者见智的事了，每个公司的需求不一样，有用redis分析的，有用zeromq分析，这就看大家的喜好了，分析完最后还是推荐大家用highcharts出图比较好看，这里推荐使用highcharts的文章：<a href="http://opslinux.com/python_and_highcharts-.html" target="_blank" rel="noopener noreffer ">highcharts使用</a></p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2014-05-10</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/posts/python%E5%AE%9E%E7%8E%B0%E5%88%86%E6%9E%90Nginx%E6%97%A5%E5%BF%97web%E5%B9%B3%E5%8F%B0/index.md" target="_blank">Read Markdown</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://zbing3.github.com/posts/python%E5%AE%9E%E7%8E%B0%E5%88%86%E6%9E%90Nginx%E6%97%A5%E5%BF%97web%E5%B9%B3%E5%8F%B0/" data-title="python实现分析Nginx日志web平台" data-hashtags="python,nginx日志分析"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://zbing3.github.com/posts/python%E5%AE%9E%E7%8E%B0%E5%88%86%E6%9E%90Nginx%E6%97%A5%E5%BF%97web%E5%B9%B3%E5%8F%B0/" data-hashtag="python"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://zbing3.github.com/posts/python%E5%AE%9E%E7%8E%B0%E5%88%86%E6%9E%90Nginx%E6%97%A5%E5%BF%97web%E5%B9%B3%E5%8F%B0/" data-title="python实现分析Nginx日志web平台"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="https://zbing3.github.com/posts/python%E5%AE%9E%E7%8E%B0%E5%88%86%E6%9E%90Nginx%E6%97%A5%E5%BF%97web%E5%B9%B3%E5%8F%B0/" data-title="python实现分析Nginx日志web平台"><i data-svg-src="/lib/simple-icons/icons/line.min.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="https://zbing3.github.com/posts/python%E5%AE%9E%E7%8E%B0%E5%88%86%E6%9E%90Nginx%E6%97%A5%E5%BF%97web%E5%B9%B3%E5%8F%B0/" data-title="python实现分析Nginx日志web平台"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/python/">python</a>,&nbsp;<a href="/tags/nginx%E6%97%A5%E5%BF%97%E5%88%86%E6%9E%90/">nginx日志分析</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/Django-ajax-post/" class="prev" rel="prev" title="Django ajax post"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Django ajax post</a>
+            <a href="/posts/%E7%AE%97%E6%B3%95%E7%9A%84%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6/" class="next" rel="next" title="算法的时间复杂度">算法的时间复杂度<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.119.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2013 - 2023</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">皓禹</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script type="text/javascript" src="/lib/autocomplete/autocomplete.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.min.js"></script><script type="text/javascript" src="/lib/lazysizes/lazysizes.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="/lib/sharer/sharer.min.js"></script><script type="text/javascript" src="/lib/katex/katex.min.js"></script><script type="text/javascript" src="/lib/katex/contrib/auto-render.min.js"></script><script type="text/javascript" src="/lib/katex/contrib/copy-tex.min.js"></script><script type="text/javascript" src="/lib/katex/contrib/mhchem.min.js"></script><script type="text/javascript" src="/lib/cookieconsent/cookieconsent.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":50},"comment":{},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

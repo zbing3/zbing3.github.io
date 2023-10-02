@@ -6,10 +6,10 @@
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>zbing3@gmail.com (皓禹)</managingEditor>
             <webMaster>zbing3@gmail.com (皓禹)</webMaster><lastBuildDate>Sun, 04 May 2014 15:37:43 &#43;0000</lastBuildDate><atom:link href="https://zbing3.github.com/tags/tornado/" rel="self" type="application/rss+xml" /><item>
     <title>tornado session装饰器</title>
-    <link>https://zbing3.github.com/2014/05/04/tornado-session%E8%A3%85%E9%A5%B0%E5%99%A8/</link>
+    <link>https://zbing3.github.com/posts/tornado-session%E8%A3%85%E9%A5%B0%E5%99%A8/</link>
     <pubDate>Sun, 04 May 2014 15:37:43 &#43;0000</pubDate>
     <author>皓禹</author>
-    <guid>https://zbing3.github.com/2014/05/04/tornado-session%E8%A3%85%E9%A5%B0%E5%99%A8/</guid>
+    <guid>https://zbing3.github.com/posts/tornado-session%E8%A3%85%E9%A5%B0%E5%99%A8/</guid>
     <description><![CDATA[tornado属于轻量级，异步，高并发的代名词了，虽然开发网站的速度比较慢，但是大多数同学开发后端服务，还都是喜欢使用tornado，今天给]]></description>
 </item>
 </channel>

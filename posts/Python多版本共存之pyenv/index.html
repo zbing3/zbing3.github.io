@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Python多版本共存之pyenv - 创e - 皓禹</title><meta name="Description" content="一切伟大的行动和思想都有一个微不足道的开始"><meta property="og:title" content="Python多版本共存之pyenv" />
+<meta property="og:description" content="需要使用新版本Python的相关功能，但是又不想要影响到系统自带的Python，这个时候就需要实现Python的多版本共存。 pyenv可以很" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://zbing3.github.com/posts/Python%E5%A4%9A%E7%89%88%E6%9C%AC%E5%85%B1%E5%AD%98%E4%B9%8Bpyenv/" /><meta property="og:image" content="https://zbing3.github.com/logo.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2013-10-04T00:27:00+00:00" />
+<meta property="article:modified_time" content="2013-10-04T00:27:00+00:00" /><meta property="og:site_name" content="创e - 皓禹" />
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://zbing3.github.com/logo.png"/>
+
+<meta name="twitter:title" content="Python多版本共存之pyenv"/>
+<meta name="twitter:description" content="需要使用新版本Python的相关功能，但是又不想要影响到系统自带的Python，这个时候就需要实现Python的多版本共存。 pyenv可以很"/>
+<meta name="application-name" content="My cool site">
+<meta name="apple-mobile-web-app-title" content="My cool site"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://zbing3.github.com/posts/Python%E5%A4%9A%E7%89%88%E6%9C%AC%E5%85%B1%E5%AD%98%E4%B9%8Bpyenv/" /><link rel="prev" href="https://zbing3.github.com/posts/%E4%BD%BF%E7%94%A8Vagrant%E6%89%93%E9%80%A0%E4%BD%A0%E7%9A%84%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83/" /><link rel="next" href="https://zbing3.github.com/posts/python%E4%B8%AD%E7%9A%84urlencode%E4%B8%8Eurldecode/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Python多版本共存之pyenv",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/zbing3.github.com\/posts\/Python%E5%A4%9A%E7%89%88%E6%9C%AC%E5%85%B1%E5%AD%98%E4%B9%8Bpyenv\/"
+        },"genre": "posts","keywords": "python","wordcount":  680 ,
+        "url": "https:\/\/zbing3.github.com\/posts\/Python%E5%A4%9A%E7%89%88%E6%9C%AC%E5%85%B1%E5%AD%98%E4%B9%8Bpyenv\/","datePublished": "2013-10-04T00:27:00+00:00","dateModified": "2013-10-04T00:27:00+00:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "皓禹"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="创e - 皓禹">创e - 皓禹</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="创e - 皓禹">创e - 皓禹</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Python多版本共存之pyenv</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>皓禹</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2013-10-04">2013-10-04</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;680 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;2 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="true">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#安装pyenv">安装pyenv</a></li>
+    <li><a href="#安装python">安装Python</a>
+      <ul>
+        <li><a href="#查看可安装的版本">查看可安装的版本</a></li>
+        <li><a href="#安装指定版本">安装指定版本</a></li>
+        <li><a href="#更新数据库">更新数据库</a></li>
+        <li><a href="#查看当前已安装的python版本">查看当前已安装的python版本</a></li>
+        <li><a href="#设置全局的python版本">设置全局的python版本</a></li>
+        <li><a href="#确认python版本">确认python版本</a></li>
+      </ul>
+    </li>
+    <li><a href="#使用python">使用python</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>需要使用新版本Python的相关功能，但是又不想要影响到系统自带的Python，这个时候就需要实现Python的多版本共存。</p>
+<p><a href="https://github.com/yyuu/pyenv" target="_blank" rel="noopener noreffer ">pyenv</a>可以很好的实现Python的多版本共存。</p>
+<h2 id="安装pyenv">安装pyenv</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">$ git clone git://github.com/yyuu/pyenv.git ~/.pyenv
+</span></span><span class="line"><span class="cl">$ echo &#39;export PYENV_ROOT=&#34;$HOME/.pyenv&#34;&#39; &gt;&gt; ~/.bashrc
+</span></span><span class="line"><span class="cl">$ echo &#39;export PATH=&#34;$PYENV_ROOT/bin:$PATH&#34;&#39; &gt;&gt; ~/.bashrc
+</span></span><span class="line"><span class="cl">$ echo &#39;eval &#34;$(pyenv init -)&#34;&#39; &gt;&gt; ~/.bashrc
+</span></span><span class="line"><span class="cl">$ exec $SHELL -l
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="安装python">安装Python</h2>
+<h3 id="查看可安装的版本">查看可安装的版本</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">$ pyenv install --list
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="安装指定版本">安装指定版本</h3>
+<p>使用如下命令即可安装python 3.3.2.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">$ pyenv install 3.3.2
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>该命令会从github上下载python的源代码，并解压到/tmp目录下，然后在/tmp中执行编译工作。编译过程依赖一些其他的库文件，若库文件不能满足，则编译错误，需要重新下载、编译。。。(为什么每次都要重新下呢？)</p>
+<p>已知的一些需要预先安装的库包括：</p>
+<ul>
+<li>readline readline-devel readline-static</li>
+<li>openssl openssl-devel openssl-static</li>
+<li>sqlite-devel</li>
+<li>bzip2-devel bzip2-libs</li>
+</ul>
+<p>在所有python依赖库都安装好的情况下，python的安装很顺利。</p>
+<h3 id="更新数据库">更新数据库</h3>
+<p>安装完成之后需要对数据库进行更新：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">$ pyenv rehash
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="查看当前已安装的python版本">查看当前已安装的python版本</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">$ pyenv versions
+</span></span><span class="line"><span class="cl">* system (set by /export/home/seisman/.pyenv/version)
+</span></span><span class="line"><span class="cl">3.3.2
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>其中的星号表示使用的是系统自带的python。</p>
+<h3 id="设置全局的python版本">设置全局的python版本</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">$ pyenv global 3.3.2
+</span></span><span class="line"><span class="cl">$ pyenv versions
+</span></span><span class="line"><span class="cl">system
+</span></span><span class="line"><span class="cl">* 3.3.2 (set by /export/home/seisman/.pyenv/version)
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>当前全局的python版本已经变成了3.3.2。也可以使用<tt class="docutils literal">pyenv local</tt>或<tt class="docutils literal">pyenv shell</tt>临时改变python版本。</p>
+<h3 id="确认python版本">确认python版本</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">$ python
+</span></span><span class="line"><span class="cl">Python 3.3.2 (default, Sep 30 2013, 20:11:44)
+</span></span><span class="line"><span class="cl">[GCC 4.4.7 20120313 (Red Hat 4.4.7-3)] on linux
+</span></span><span class="line"><span class="cl">Type &#34;help&#34;, &#34;copyright&#34;, &#34;credits&#34; or &#34;license&#34; for more information.
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt;
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="使用python">使用python</h2>
+<ul>
+<li>输入<tt class="docutils literal">python</tt>即可使用新版本的python；</li>
+<li>系统命令会以/usr/bin/python的方式直接调用老版本的python；</li>
+<li>使用pip安装第三方模块时会安装到~/.pyenv/versions/3.3.2下，不会和系统模块发生冲突。</li>
+</ul>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2013-10-04</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/posts/Python%E5%A4%9A%E7%89%88%E6%9C%AC%E5%85%B1%E5%AD%98%E4%B9%8Bpyenv/index.md" target="_blank">Read Markdown</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://zbing3.github.com/posts/Python%E5%A4%9A%E7%89%88%E6%9C%AC%E5%85%B1%E5%AD%98%E4%B9%8Bpyenv/" data-title="Python多版本共存之pyenv" data-hashtags="python"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://zbing3.github.com/posts/Python%E5%A4%9A%E7%89%88%E6%9C%AC%E5%85%B1%E5%AD%98%E4%B9%8Bpyenv/" data-hashtag="python"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://zbing3.github.com/posts/Python%E5%A4%9A%E7%89%88%E6%9C%AC%E5%85%B1%E5%AD%98%E4%B9%8Bpyenv/" data-title="Python多版本共存之pyenv"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="https://zbing3.github.com/posts/Python%E5%A4%9A%E7%89%88%E6%9C%AC%E5%85%B1%E5%AD%98%E4%B9%8Bpyenv/" data-title="Python多版本共存之pyenv"><i data-svg-src="/lib/simple-icons/icons/line.min.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="https://zbing3.github.com/posts/Python%E5%A4%9A%E7%89%88%E6%9C%AC%E5%85%B1%E5%AD%98%E4%B9%8Bpyenv/" data-title="Python多版本共存之pyenv"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/python/">python</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/%E4%BD%BF%E7%94%A8Vagrant%E6%89%93%E9%80%A0%E4%BD%A0%E7%9A%84%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83/" class="prev" rel="prev" title="使用Vagrant打造你的虚拟环境"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>使用Vagrant打造你的虚拟环境</a>
+            <a href="/posts/python%E4%B8%AD%E7%9A%84urlencode%E4%B8%8Eurldecode/" class="next" rel="next" title="python中的urlencode与urldecode">python中的urlencode与urldecode<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.119.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2013 - 2023</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">皓禹</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script type="text/javascript" src="/lib/autocomplete/autocomplete.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.min.js"></script><script type="text/javascript" src="/lib/lazysizes/lazysizes.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="/lib/sharer/sharer.min.js"></script><script type="text/javascript" src="/lib/katex/katex.min.js"></script><script type="text/javascript" src="/lib/katex/contrib/auto-render.min.js"></script><script type="text/javascript" src="/lib/katex/contrib/copy-tex.min.js"></script><script type="text/javascript" src="/lib/katex/contrib/mhchem.min.js"></script><script type="text/javascript" src="/lib/cookieconsent/cookieconsent.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":50},"comment":{},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

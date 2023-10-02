@@ -6,10 +6,10 @@
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>zbing3@gmail.com (皓禹)</managingEditor>
             <webMaster>zbing3@gmail.com (皓禹)</webMaster><lastBuildDate>Fri, 24 Jan 2014 15:33:00 &#43;0000</lastBuildDate><atom:link href="https://zbing3.github.com/tags/HTTP/" rel="self" type="application/rss+xml" /><item>
     <title>HTTP Header 详解</title>
-    <link>https://zbing3.github.com/2014/01/24/HTTP-Header-%E8%AF%A6%E8%A7%A3/</link>
+    <link>https://zbing3.github.com/posts/HTTP-Header-%E8%AF%A6%E8%A7%A3/</link>
     <pubDate>Fri, 24 Jan 2014 15:33:00 &#43;0000</pubDate>
     <author>皓禹</author>
-    <guid>https://zbing3.github.com/2014/01/24/HTTP-Header-%E8%AF%A6%E8%A7%A3/</guid>
+    <guid>https://zbing3.github.com/posts/HTTP-Header-%E8%AF%A6%E8%A7%A3/</guid>
     <description><![CDATA[HTTP（HyperTextTransferProtocol）即超文本传输协议，目前网页传输的的通用协议。HTTP协议采用了请求/响应模型，]]></description>
 </item>
 </channel>

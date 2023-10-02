@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>分析go-redis库源码 - 创e - 皓禹</title><meta name="Description" content="一切伟大的行动和思想都有一个微不足道的开始"><meta property="og:title" content="分析go-redis库源码" />
+<meta property="og:description" content="项目地址：https://github.com/go-redis/redis 寻找入口 寻找入库，一般从 Quickstart 会给我们很多线索 1 2 3 4 5 6 7 8 9 10 11" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://zbing3.github.com/posts/%E5%88%86%E6%9E%90go-redis%E5%BA%93%E6%BA%90%E7%A0%81/" /><meta property="og:image" content="https://zbing3.github.com/logo.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2016-10-30T08:43:42+00:00" />
+<meta property="article:modified_time" content="2016-10-30T08:43:42+00:00" /><meta property="og:site_name" content="创e - 皓禹" />
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://zbing3.github.com/logo.png"/>
+
+<meta name="twitter:title" content="分析go-redis库源码"/>
+<meta name="twitter:description" content="项目地址：https://github.com/go-redis/redis 寻找入口 寻找入库，一般从 Quickstart 会给我们很多线索 1 2 3 4 5 6 7 8 9 10 11"/>
+<meta name="application-name" content="My cool site">
+<meta name="apple-mobile-web-app-title" content="My cool site"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://zbing3.github.com/posts/%E5%88%86%E6%9E%90go-redis%E5%BA%93%E6%BA%90%E7%A0%81/" /><link rel="prev" href="https://zbing3.github.com/posts/%E4%BD%BF%E7%94%A8-nginx-x-accel-redirect-%E4%BF%9D%E6%8A%A4%E4%BD%A0%E7%9A%84%E9%9D%99%E6%80%81%E6%96%87%E4%BB%B6/" /><link rel="next" href="https://zbing3.github.com/posts/0-%E6%90%AD%E5%BB%BA%E7%8E%AF%E5%A2%83/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "分析go-redis库源码",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/zbing3.github.com\/posts\/%E5%88%86%E6%9E%90go-redis%E5%BA%93%E6%BA%90%E7%A0%81\/"
+        },"genre": "posts","wordcount":  2303 ,
+        "url": "https:\/\/zbing3.github.com\/posts\/%E5%88%86%E6%9E%90go-redis%E5%BA%93%E6%BA%90%E7%A0%81\/","datePublished": "2016-10-30T08:43:42+00:00","dateModified": "2016-10-30T08:43:42+00:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "皓禹"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="创e - 皓禹">创e - 皓禹</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="创e - 皓禹">创e - 皓禹</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">分析go-redis库源码</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>皓禹</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2016-10-30">2016-10-30</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;2303 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;5 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="true">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents"></nav></div>
+            </div><div class="content" id="content"><p>项目地址：https://github.com/go-redis/redis</p>
+<h1 id="寻找入口">寻找入口</h1>
+<p>寻找入库，一般从 Quickstart 会给我们很多线索</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">func ExampleNewClient() {
+</span></span><span class="line"><span class="cl">    client := redis.NewClient(&amp;redis.Options{
+</span></span><span class="line"><span class="cl">        Addr:     &#34;localhost:6379&#34;,
+</span></span><span class="line"><span class="cl">        Password: &#34;&#34;, // no password set
+</span></span><span class="line"><span class="cl">        DB:       0,  // use default DB
+</span></span><span class="line"><span class="cl">    })
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    pong, err := client.Ping().Result()
+</span></span><span class="line"><span class="cl">    fmt.Println(pong, err)
+</span></span><span class="line"><span class="cl">    // Output: PONG &lt;nil&gt;
+</span></span><span class="line"><span class="cl">}
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>我们看到 创建client的时候调用 redis.NewClient 方法，我们不妨寻找一下这个函数</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">$ git clone https://github.com/go-redis/redis.git
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">$ cd redis
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">$ grep -r -n &#34;NewClient&#34; *.go                                                                                                                                     [10:17:37]
+</span></span><span class="line"><span class="cl">bench_test.go:12:	client := redis.NewClient(&amp;redis.Options{
+</span></span><span class="line"><span class="cl">cluster.go:239:		Client: NewClient(opt),
+</span></span><span class="line"><span class="cl">cluster_test.go:64:		client := redis.NewClient(&amp;redis.Options{
+</span></span><span class="line"><span class="cl">command_test.go:14:		client = redis.NewClient(redisOptions())
+</span></span><span class="line"><span class="cl">commands_test.go:19:		client = redis.NewClient(redisOptions())
+</span></span><span class="line"><span class="cl">example_test.go:15:	client = redis.NewClient(&amp;redis.Options{
+</span></span><span class="line"><span class="cl">example_test.go:26:func ExampleNewClient() {
+</span></span><span class="line"><span class="cl">example_test.go:27:	client := redis.NewClient(&amp;redis.Options{
+</span></span><span class="line"><span class="cl">iterator_test.go:47:		client = redis.NewClient(redisOptions())
+</span></span><span class="line"><span class="cl">main_test.go:204:	client := redis.NewClient(&amp;redis.Options{
+</span></span><span class="line"><span class="cl">pipeline_test.go:17:		client = redis.NewClient(redisOptions())
+</span></span><span class="line"><span class="cl">pool_test.go:17:		client = redis.NewClient(redisOptions())
+</span></span><span class="line"><span class="cl">pubsub_test.go:19:		client = redis.NewClient(redisOptions())
+</span></span><span class="line"><span class="cl">race_test.go:23:		client = redis.NewClient(redisOptions())
+</span></span><span class="line"><span class="cl">race_test.go:114:		client = redis.NewClient(redisOptions())
+</span></span><span class="line"><span class="cl">race_test.go:175:			client := redis.NewClient(opt)
+</span></span><span class="line"><span class="cl">race_test.go:198:			client := redis.NewClient(opt)
+</span></span><span class="line"><span class="cl">redis.go:167:// NewClient returns a client to the Redis Server specified by Options.
+</span></span><span class="line"><span class="cl">redis.go:168:func NewClient(opt *Options) *Client {
+</span></span><span class="line"><span class="cl">redis_test.go:17:		client = redis.NewClient(redisOptions())
+</span></span><span class="line"><span class="cl">redis_test.go:40:		custom := redis.NewClient(&amp;redis.Options{
+</span></span><span class="line"><span class="cl">redis_test.go:109:		db2 := redis.NewClient(&amp;redis.Options{
+</span></span><span class="line"><span class="cl">redis_test.go:141:		client = redis.NewClient(&amp;redis.Options{
+</span></span><span class="line"><span class="cl">redis_test.go:195:		client = redis.NewClient(redisOptions())
+</span></span><span class="line"><span class="cl">ring.go:157:		ring.addClient(name, NewClient(clopt))
+</span></span><span class="line"><span class="cl">tx_test.go:17:		client = redis.NewClient(redisOptions())
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>我们可以看到 redis.go 的168行有 NewClient 函数的定义</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">redis.go:168:func NewClient(opt *Options) *Client {
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>这样我们找到了一个入口</p>
+<h1 id="绘制项目地图">绘制项目地图</h1>
+<p>我们找查看一个项目，绘制这个项目的地图很重要</p>
+<p>通过 redis.go 168行我们可以看到，输入的参数 Options 和 返回值 Client
+<img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="media/14777950888230.jpg"
+        data-srcset="media/14777950888230.jpg, media/14777950888230.jpg 1.5x, media/14777950888230.jpg 2x"
+        data-sizes="auto"
+        alt="media/14777950888230.jpg"
+        title="media/14777950888230.jpg" /></p>
+<p>我们看下 Optins 的定义：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">type Options struct {
+</span></span><span class="line"><span class="cl">	Network string
+</span></span><span class="line"><span class="cl">	Addr string
+</span></span><span class="line"><span class="cl">	Dialer func() (net.Conn, error)
+</span></span><span class="line"><span class="cl">	Password string
+</span></span><span class="line"><span class="cl">	DB int
+</span></span><span class="line"><span class="cl">	MaxRetries int
+</span></span><span class="line"><span class="cl">	DialTimeout time.Duration
+</span></span><span class="line"><span class="cl">	ReadTimeout time.Duration
+</span></span><span class="line"><span class="cl">	WriteTimeout time.Duration
+</span></span><span class="line"><span class="cl">	PoolSize int
+</span></span><span class="line"><span class="cl">	PoolTimeout time.Duration
+</span></span><span class="line"><span class="cl">	IdleTimeout time.Duration
+</span></span><span class="line"><span class="cl">	IdleCheckFrequency time.Duration
+</span></span><span class="line"><span class="cl">	ReadOnly bool
+</span></span><span class="line"><span class="cl">}
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>都是一些连接是用的参数，往下看有初始化函数</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">func (opt *Options) init() {
+</span></span><span class="line"><span class="cl">	if opt.Network == &#34;&#34; {
+</span></span><span class="line"><span class="cl">		opt.Network = &#34;tcp&#34;
+</span></span><span class="line"><span class="cl">	}
+</span></span><span class="line"><span class="cl">	if opt.Dialer == nil {
+</span></span><span class="line"><span class="cl">		opt.Dialer = func() (net.Conn, error) {
+</span></span><span class="line"><span class="cl">			return net.DialTimeout(opt.Network, opt.Addr, opt.DialTimeout)
+</span></span><span class="line"><span class="cl">		}
+</span></span><span class="line"><span class="cl">	}
+</span></span><span class="line"><span class="cl">	if opt.PoolSize == 0 {
+</span></span><span class="line"><span class="cl">		opt.PoolSize = 10
+</span></span><span class="line"><span class="cl">	}
+</span></span><span class="line"><span class="cl">	if opt.DialTimeout == 0 {
+</span></span><span class="line"><span class="cl">		opt.DialTimeout = 5 * time.Second
+</span></span><span class="line"><span class="cl">	}
+</span></span><span class="line"><span class="cl">	if opt.ReadTimeout == 0 {
+</span></span><span class="line"><span class="cl">		opt.ReadTimeout = 3 * time.Second
+</span></span><span class="line"><span class="cl">	}
+</span></span><span class="line"><span class="cl">	if opt.WriteTimeout == 0 {
+</span></span><span class="line"><span class="cl">		opt.WriteTimeout = opt.ReadTimeout
+</span></span><span class="line"><span class="cl">	}
+</span></span><span class="line"><span class="cl">	if opt.PoolTimeout == 0 {
+</span></span><span class="line"><span class="cl">		opt.PoolTimeout = opt.ReadTimeout + time.Second
+</span></span><span class="line"><span class="cl">	}
+</span></span><span class="line"><span class="cl">	if opt.IdleTimeout == 0 {
+</span></span><span class="line"><span class="cl">		opt.IdleTimeout = 5 * time.Minute
+</span></span><span class="line"><span class="cl">	}
+</span></span><span class="line"><span class="cl">	if opt.IdleCheckFrequency == 0 {
+</span></span><span class="line"><span class="cl">		opt.IdleCheckFrequency = time.Minute
+</span></span><span class="line"><span class="cl">	}
+</span></span><span class="line"><span class="cl">}
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>对于参数提供了默认值</p>
+<p>然后我们看一下 Clinet 的定义， redis.go 151行 ：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">type Client struct {
+</span></span><span class="line"><span class="cl">	baseClient
+</span></span><span class="line"><span class="cl">	cmdable
+</span></span><span class="line"><span class="cl">}
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">var _ Cmdable = (*Client)(nil)
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="media/14778013264082.jpg"
+        data-srcset="media/14778013264082.jpg, media/14778013264082.jpg 1.5x, media/14778013264082.jpg 2x"
+        data-sizes="auto"
+        alt="media/14778013264082.jpg"
+        title="media/14778013264082.jpg" /></p>
+<p>Client 是由 baseClient 和 cmdable 组合而成。 从命名上来看 baseClient是保存一些基础不变的东西，cmdable可能是负责命令。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">var _ Cmdable = (*Client)(nil)
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>这行的意思 Client 要实现 Cmdable 这样的接口，要不然编译器会报错。 从 Client的结构上看只有 cmdble才能实现这样的一个接口</p>
+<p>我们看下 Cmdable 的源码：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">  1
+</span><span class="lnt">  2
+</span><span class="lnt">  3
+</span><span class="lnt">  4
+</span><span class="lnt">  5
+</span><span class="lnt">  6
+</span><span class="lnt">  7
+</span><span class="lnt">  8
+</span><span class="lnt">  9
+</span><span class="lnt"> 10
+</span><span class="lnt"> 11
+</span><span class="lnt"> 12
+</span><span class="lnt"> 13
+</span><span class="lnt"> 14
+</span><span class="lnt"> 15
+</span><span class="lnt"> 16
+</span><span class="lnt"> 17
+</span><span class="lnt"> 18
+</span><span class="lnt"> 19
+</span><span class="lnt"> 20
+</span><span class="lnt"> 21
+</span><span class="lnt"> 22
+</span><span class="lnt"> 23
+</span><span class="lnt"> 24
+</span><span class="lnt"> 25
+</span><span class="lnt"> 26
+</span><span class="lnt"> 27
+</span><span class="lnt"> 28
+</span><span class="lnt"> 29
+</span><span class="lnt"> 30
+</span><span class="lnt"> 31
+</span><span class="lnt"> 32
+</span><span class="lnt"> 33
+</span><span class="lnt"> 34
+</span><span class="lnt"> 35
+</span><span class="lnt"> 36
+</span><span class="lnt"> 37
+</span><span class="lnt"> 38
+</span><span class="lnt"> 39
+</span><span class="lnt"> 40
+</span><span class="lnt"> 41
+</span><span class="lnt"> 42
+</span><span class="lnt"> 43
+</span><span class="lnt"> 44
+</span><span class="lnt"> 45
+</span><span class="lnt"> 46
+</span><span class="lnt"> 47
+</span><span class="lnt"> 48
+</span><span class="lnt"> 49
+</span><span class="lnt"> 50
+</span><span class="lnt"> 51
+</span><span class="lnt"> 52
+</span><span class="lnt"> 53
+</span><span class="lnt"> 54
+</span><span class="lnt"> 55
+</span><span class="lnt"> 56
+</span><span class="lnt"> 57
+</span><span class="lnt"> 58
+</span><span class="lnt"> 59
+</span><span class="lnt"> 60
+</span><span class="lnt"> 61
+</span><span class="lnt"> 62
+</span><span class="lnt"> 63
+</span><span class="lnt"> 64
+</span><span class="lnt"> 65
+</span><span class="lnt"> 66
+</span><span class="lnt"> 67
+</span><span class="lnt"> 68
+</span><span class="lnt"> 69
+</span><span class="lnt"> 70
+</span><span class="lnt"> 71
+</span><span class="lnt"> 72
+</span><span class="lnt"> 73
+</span><span class="lnt"> 74
+</span><span class="lnt"> 75
+</span><span class="lnt"> 76
+</span><span class="lnt"> 77
+</span><span class="lnt"> 78
+</span><span class="lnt"> 79
+</span><span class="lnt"> 80
+</span><span class="lnt"> 81
+</span><span class="lnt"> 82
+</span><span class="lnt"> 83
+</span><span class="lnt"> 84
+</span><span class="lnt"> 85
+</span><span class="lnt"> 86
+</span><span class="lnt"> 87
+</span><span class="lnt"> 88
+</span><span class="lnt"> 89
+</span><span class="lnt"> 90
+</span><span class="lnt"> 91
+</span><span class="lnt"> 92
+</span><span class="lnt"> 93
+</span><span class="lnt"> 94
+</span><span class="lnt"> 95
+</span><span class="lnt"> 96
+</span><span class="lnt"> 97
+</span><span class="lnt"> 98
+</span><span class="lnt"> 99
+</span><span class="lnt">100
+</span><span class="lnt">101
+</span><span class="lnt">102
+</span><span class="lnt">103
+</span><span class="lnt">104
+</span><span class="lnt">105
+</span><span class="lnt">106
+</span><span class="lnt">107
+</span><span class="lnt">108
+</span><span class="lnt">109
+</span><span class="lnt">110
+</span><span class="lnt">111
+</span><span class="lnt">112
+</span><span class="lnt">113
+</span><span class="lnt">114
+</span><span class="lnt">115
+</span><span class="lnt">116
+</span><span class="lnt">117
+</span><span class="lnt">118
+</span><span class="lnt">119
+</span><span class="lnt">120
+</span><span class="lnt">121
+</span><span class="lnt">122
+</span><span class="lnt">123
+</span><span class="lnt">124
+</span><span class="lnt">125
+</span><span class="lnt">126
+</span><span class="lnt">127
+</span><span class="lnt">128
+</span><span class="lnt">129
+</span><span class="lnt">130
+</span><span class="lnt">131
+</span><span class="lnt">132
+</span><span class="lnt">133
+</span><span class="lnt">134
+</span><span class="lnt">135
+</span><span class="lnt">136
+</span><span class="lnt">137
+</span><span class="lnt">138
+</span><span class="lnt">139
+</span><span class="lnt">140
+</span><span class="lnt">141
+</span><span class="lnt">142
+</span><span class="lnt">143
+</span><span class="lnt">144
+</span><span class="lnt">145
+</span><span class="lnt">146
+</span><span class="lnt">147
+</span><span class="lnt">148
+</span><span class="lnt">149
+</span><span class="lnt">150
+</span><span class="lnt">151
+</span><span class="lnt">152
+</span><span class="lnt">153
+</span><span class="lnt">154
+</span><span class="lnt">155
+</span><span class="lnt">156
+</span><span class="lnt">157
+</span><span class="lnt">158
+</span><span class="lnt">159
+</span><span class="lnt">160
+</span><span class="lnt">161
+</span><span class="lnt">162
+</span><span class="lnt">163
+</span><span class="lnt">164
+</span><span class="lnt">165
+</span><span class="lnt">166
+</span><span class="lnt">167
+</span><span class="lnt">168
+</span><span class="lnt">169
+</span><span class="lnt">170
+</span><span class="lnt">171
+</span><span class="lnt">172
+</span><span class="lnt">173
+</span><span class="lnt">174
+</span><span class="lnt">175
+</span><span class="lnt">176
+</span><span class="lnt">177
+</span><span class="lnt">178
+</span><span class="lnt">179
+</span><span class="lnt">180
+</span><span class="lnt">181
+</span><span class="lnt">182
+</span><span class="lnt">183
+</span><span class="lnt">184
+</span><span class="lnt">185
+</span><span class="lnt">186
+</span><span class="lnt">187
+</span><span class="lnt">188
+</span><span class="lnt">189
+</span><span class="lnt">190
+</span><span class="lnt">191
+</span><span class="lnt">192
+</span><span class="lnt">193
+</span><span class="lnt">194
+</span><span class="lnt">195
+</span><span class="lnt">196
+</span><span class="lnt">197
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">type Cmdable interface {
+</span></span><span class="line"><span class="cl">	Pipeline() *Pipeline
+</span></span><span class="line"><span class="cl">	Pipelined(fn func(*Pipeline) error) ([]Cmder, error)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	Echo(message interface{}) *StringCmd
+</span></span><span class="line"><span class="cl">	Ping() *StatusCmd
+</span></span><span class="line"><span class="cl">	Quit() *StatusCmd
+</span></span><span class="line"><span class="cl">	Del(keys ...string) *IntCmd
+</span></span><span class="line"><span class="cl">	Dump(key string) *StringCmd
+</span></span><span class="line"><span class="cl">	Exists(key string) *BoolCmd
+</span></span><span class="line"><span class="cl">	Expire(key string, expiration time.Duration) *BoolCmd
+</span></span><span class="line"><span class="cl">	ExpireAt(key string, tm time.Time) *BoolCmd
+</span></span><span class="line"><span class="cl">	Keys(pattern string) *StringSliceCmd
+</span></span><span class="line"><span class="cl">	Migrate(host, port, key string, db int64, timeout time.Duration) *StatusCmd
+</span></span><span class="line"><span class="cl">	Move(key string, db int64) *BoolCmd
+</span></span><span class="line"><span class="cl">	ObjectRefCount(keys ...string) *IntCmd
+</span></span><span class="line"><span class="cl">	ObjectEncoding(keys ...string) *StringCmd
+</span></span><span class="line"><span class="cl">	ObjectIdleTime(keys ...string) *DurationCmd
+</span></span><span class="line"><span class="cl">	Persist(key string) *BoolCmd
+</span></span><span class="line"><span class="cl">	PExpire(key string, expiration time.Duration) *BoolCmd
+</span></span><span class="line"><span class="cl">	PExpireAt(key string, tm time.Time) *BoolCmd
+</span></span><span class="line"><span class="cl">	PTTL(key string) *DurationCmd
+</span></span><span class="line"><span class="cl">	RandomKey() *StringCmd
+</span></span><span class="line"><span class="cl">	Rename(key, newkey string) *StatusCmd
+</span></span><span class="line"><span class="cl">	RenameNX(key, newkey string) *BoolCmd
+</span></span><span class="line"><span class="cl">	Restore(key string, ttl time.Duration, value string) *StatusCmd
+</span></span><span class="line"><span class="cl">	RestoreReplace(key string, ttl time.Duration, value string) *StatusCmd
+</span></span><span class="line"><span class="cl">	Sort(key string, sort Sort) *StringSliceCmd
+</span></span><span class="line"><span class="cl">	SortInterfaces(key string, sort Sort) *SliceCmd
+</span></span><span class="line"><span class="cl">	TTL(key string) *DurationCmd
+</span></span><span class="line"><span class="cl">	Type(key string) *StatusCmd
+</span></span><span class="line"><span class="cl">	Scan(cursor uint64, match string, count int64) Scanner
+</span></span><span class="line"><span class="cl">	SScan(key string, cursor uint64, match string, count int64) Scanner
+</span></span><span class="line"><span class="cl">	HScan(key string, cursor uint64, match string, count int64) Scanner
+</span></span><span class="line"><span class="cl">	ZScan(key string, cursor uint64, match string, count int64) Scanner
+</span></span><span class="line"><span class="cl">	Append(key, value string) *IntCmd
+</span></span><span class="line"><span class="cl">	BitCount(key string, bitCount *BitCount) *IntCmd
+</span></span><span class="line"><span class="cl">	BitOpAnd(destKey string, keys ...string) *IntCmd
+</span></span><span class="line"><span class="cl">	BitOpOr(destKey string, keys ...string) *IntCmd
+</span></span><span class="line"><span class="cl">	BitOpXor(destKey string, keys ...string) *IntCmd
+</span></span><span class="line"><span class="cl">	BitOpNot(destKey string, key string) *IntCmd
+</span></span><span class="line"><span class="cl">	BitPos(key string, bit int64, pos ...int64) *IntCmd
+</span></span><span class="line"><span class="cl">	Decr(key string) *IntCmd
+</span></span><span class="line"><span class="cl">	DecrBy(key string, decrement int64) *IntCmd
+</span></span><span class="line"><span class="cl">	Get(key string) *StringCmd
+</span></span><span class="line"><span class="cl">	GetBit(key string, offset int64) *IntCmd
+</span></span><span class="line"><span class="cl">	GetRange(key string, start, end int64) *StringCmd
+</span></span><span class="line"><span class="cl">	GetSet(key string, value interface{}) *StringCmd
+</span></span><span class="line"><span class="cl">	Incr(key string) *IntCmd
+</span></span><span class="line"><span class="cl">	IncrBy(key string, value int64) *IntCmd
+</span></span><span class="line"><span class="cl">	IncrByFloat(key string, value float64) *FloatCmd
+</span></span><span class="line"><span class="cl">	MGet(keys ...string) *SliceCmd
+</span></span><span class="line"><span class="cl">	MSet(pairs ...interface{}) *StatusCmd
+</span></span><span class="line"><span class="cl">	MSetNX(pairs ...interface{}) *BoolCmd
+</span></span><span class="line"><span class="cl">	Set(key string, value interface{}, expiration time.Duration) *StatusCmd
+</span></span><span class="line"><span class="cl">	SetBit(key string, offset int64, value int) *IntCmd
+</span></span><span class="line"><span class="cl">	SetNX(key string, value interface{}, expiration time.Duration) *BoolCmd
+</span></span><span class="line"><span class="cl">	SetXX(key string, value interface{}, expiration time.Duration) *BoolCmd
+</span></span><span class="line"><span class="cl">	SetRange(key string, offset int64, value string) *IntCmd
+</span></span><span class="line"><span class="cl">	StrLen(key string) *IntCmd
+</span></span><span class="line"><span class="cl">	HDel(key string, fields ...string) *IntCmd
+</span></span><span class="line"><span class="cl">	HExists(key, field string) *BoolCmd
+</span></span><span class="line"><span class="cl">	HGet(key, field string) *StringCmd
+</span></span><span class="line"><span class="cl">	HGetAll(key string) *StringStringMapCmd
+</span></span><span class="line"><span class="cl">	HIncrBy(key, field string, incr int64) *IntCmd
+</span></span><span class="line"><span class="cl">	HIncrByFloat(key, field string, incr float64) *FloatCmd
+</span></span><span class="line"><span class="cl">	HKeys(key string) *StringSliceCmd
+</span></span><span class="line"><span class="cl">	HLen(key string) *IntCmd
+</span></span><span class="line"><span class="cl">	HMGet(key string, fields ...string) *SliceCmd
+</span></span><span class="line"><span class="cl">	HMSet(key string, fields map[string]string) *StatusCmd
+</span></span><span class="line"><span class="cl">	HSet(key, field, value string) *BoolCmd
+</span></span><span class="line"><span class="cl">	HSetNX(key, field, value string) *BoolCmd
+</span></span><span class="line"><span class="cl">	HVals(key string) *StringSliceCmd
+</span></span><span class="line"><span class="cl">	BLPop(timeout time.Duration, keys ...string) *StringSliceCmd
+</span></span><span class="line"><span class="cl">	BRPop(timeout time.Duration, keys ...string) *StringSliceCmd
+</span></span><span class="line"><span class="cl">	BRPopLPush(source, destination string, timeout time.Duration) *StringCmd
+</span></span><span class="line"><span class="cl">	LIndex(key string, index int64) *StringCmd
+</span></span><span class="line"><span class="cl">	LInsert(key, op string, pivot, value interface{}) *IntCmd
+</span></span><span class="line"><span class="cl">	LInsertBefore(key string, pivot, value interface{}) *IntCmd
+</span></span><span class="line"><span class="cl">	LInsertAfter(key string, pivot, value interface{}) *IntCmd
+</span></span><span class="line"><span class="cl">	LLen(key string) *IntCmd
+</span></span><span class="line"><span class="cl">	LPop(key string) *StringCmd
+</span></span><span class="line"><span class="cl">	LPush(key string, values ...interface{}) *IntCmd
+</span></span><span class="line"><span class="cl">	LPushX(key string, value interface{}) *IntCmd
+</span></span><span class="line"><span class="cl">	LRange(key string, start, stop int64) *StringSliceCmd
+</span></span><span class="line"><span class="cl">	LRem(key string, count int64, value interface{}) *IntCmd
+</span></span><span class="line"><span class="cl">	LSet(key string, index int64, value interface{}) *StatusCmd
+</span></span><span class="line"><span class="cl">	LTrim(key string, start, stop int64) *StatusCmd
+</span></span><span class="line"><span class="cl">	RPop(key string) *StringCmd
+</span></span><span class="line"><span class="cl">	RPopLPush(source, destination string) *StringCmd
+</span></span><span class="line"><span class="cl">	RPush(key string, values ...interface{}) *IntCmd
+</span></span><span class="line"><span class="cl">	RPushX(key string, value interface{}) *IntCmd
+</span></span><span class="line"><span class="cl">	SAdd(key string, members ...interface{}) *IntCmd
+</span></span><span class="line"><span class="cl">	SCard(key string) *IntCmd
+</span></span><span class="line"><span class="cl">	SDiff(keys ...string) *StringSliceCmd
+</span></span><span class="line"><span class="cl">	SDiffStore(destination string, keys ...string) *IntCmd
+</span></span><span class="line"><span class="cl">	SInter(keys ...string) *StringSliceCmd
+</span></span><span class="line"><span class="cl">	SInterStore(destination string, keys ...string) *IntCmd
+</span></span><span class="line"><span class="cl">	SIsMember(key string, member interface{}) *BoolCmd
+</span></span><span class="line"><span class="cl">	SMembers(key string) *StringSliceCmd
+</span></span><span class="line"><span class="cl">	SMove(source, destination string, member interface{}) *BoolCmd
+</span></span><span class="line"><span class="cl">	SPop(key string) *StringCmd
+</span></span><span class="line"><span class="cl">	SPopN(key string, count int64) *StringSliceCmd
+</span></span><span class="line"><span class="cl">	SRandMember(key string) *StringCmd
+</span></span><span class="line"><span class="cl">	SRandMemberN(key string, count int64) *StringSliceCmd
+</span></span><span class="line"><span class="cl">	SRem(key string, members ...interface{}) *IntCmd
+</span></span><span class="line"><span class="cl">	SUnion(keys ...string) *StringSliceCmd
+</span></span><span class="line"><span class="cl">	SUnionStore(destination string, keys ...string) *IntCmd
+</span></span><span class="line"><span class="cl">	ZAdd(key string, members ...Z) *IntCmd
+</span></span><span class="line"><span class="cl">	ZAddNX(key string, members ...Z) *IntCmd
+</span></span><span class="line"><span class="cl">	ZAddXX(key string, members ...Z) *IntCmd
+</span></span><span class="line"><span class="cl">	ZAddCh(key string, members ...Z) *IntCmd
+</span></span><span class="line"><span class="cl">	ZAddNXCh(key string, members ...Z) *IntCmd
+</span></span><span class="line"><span class="cl">	ZAddXXCh(key string, members ...Z) *IntCmd
+</span></span><span class="line"><span class="cl">	ZIncr(key string, member Z) *FloatCmd
+</span></span><span class="line"><span class="cl">	ZIncrNX(key string, member Z) *FloatCmd
+</span></span><span class="line"><span class="cl">	ZIncrXX(key string, member Z) *FloatCmd
+</span></span><span class="line"><span class="cl">	ZCard(key string) *IntCmd
+</span></span><span class="line"><span class="cl">	ZCount(key, min, max string) *IntCmd
+</span></span><span class="line"><span class="cl">	ZIncrBy(key string, increment float64, member string) *FloatCmd
+</span></span><span class="line"><span class="cl">	ZInterStore(destination string, store ZStore, keys ...string) *IntCmd
+</span></span><span class="line"><span class="cl">	ZRange(key string, start, stop int64) *StringSliceCmd
+</span></span><span class="line"><span class="cl">	ZRangeWithScores(key string, start, stop int64) *ZSliceCmd
+</span></span><span class="line"><span class="cl">	ZRangeByScore(key string, opt ZRangeBy) *StringSliceCmd
+</span></span><span class="line"><span class="cl">	ZRangeByLex(key string, opt ZRangeBy) *StringSliceCmd
+</span></span><span class="line"><span class="cl">	ZRangeByScoreWithScores(key string, opt ZRangeBy) *ZSliceCmd
+</span></span><span class="line"><span class="cl">	ZRank(key, member string) *IntCmd
+</span></span><span class="line"><span class="cl">	ZRem(key string, members ...interface{}) *IntCmd
+</span></span><span class="line"><span class="cl">	ZRemRangeByRank(key string, start, stop int64) *IntCmd
+</span></span><span class="line"><span class="cl">	ZRemRangeByScore(key, min, max string) *IntCmd
+</span></span><span class="line"><span class="cl">	ZRevRange(key string, start, stop int64) *StringSliceCmd
+</span></span><span class="line"><span class="cl">	ZRevRangeWithScores(key string, start, stop int64) *ZSliceCmd
+</span></span><span class="line"><span class="cl">	ZRevRangeByScore(key string, opt ZRangeBy) *StringSliceCmd
+</span></span><span class="line"><span class="cl">	ZRevRangeByLex(key string, opt ZRangeBy) *StringSliceCmd
+</span></span><span class="line"><span class="cl">	ZRevRangeByScoreWithScores(key string, opt ZRangeBy) *ZSliceCmd
+</span></span><span class="line"><span class="cl">	ZRevRank(key, member string) *IntCmd
+</span></span><span class="line"><span class="cl">	ZScore(key, member string) *FloatCmd
+</span></span><span class="line"><span class="cl">	ZUnionStore(dest string, store ZStore, keys ...string) *IntCmd
+</span></span><span class="line"><span class="cl">	PFAdd(key string, els ...interface{}) *IntCmd
+</span></span><span class="line"><span class="cl">	PFCount(keys ...string) *IntCmd
+</span></span><span class="line"><span class="cl">	PFMerge(dest string, keys ...string) *StatusCmd
+</span></span><span class="line"><span class="cl">	BgRewriteAOF() *StatusCmd
+</span></span><span class="line"><span class="cl">	BgSave() *StatusCmd
+</span></span><span class="line"><span class="cl">	ClientKill(ipPort string) *StatusCmd
+</span></span><span class="line"><span class="cl">	ClientList() *StringCmd
+</span></span><span class="line"><span class="cl">	ClientPause(dur time.Duration) *BoolCmd
+</span></span><span class="line"><span class="cl">	ClientSetName(name string) *BoolCmd
+</span></span><span class="line"><span class="cl">	ConfigGet(parameter string) *SliceCmd
+</span></span><span class="line"><span class="cl">	ConfigResetStat() *StatusCmd
+</span></span><span class="line"><span class="cl">	ConfigSet(parameter, value string) *StatusCmd
+</span></span><span class="line"><span class="cl">	DbSize() *IntCmd
+</span></span><span class="line"><span class="cl">	FlushAll() *StatusCmd
+</span></span><span class="line"><span class="cl">	FlushDb() *StatusCmd
+</span></span><span class="line"><span class="cl">	Info(section ...string) *StringCmd
+</span></span><span class="line"><span class="cl">	LastSave() *IntCmd
+</span></span><span class="line"><span class="cl">	Save() *StatusCmd
+</span></span><span class="line"><span class="cl">	Shutdown() *StatusCmd
+</span></span><span class="line"><span class="cl">	ShutdownSave() *StatusCmd
+</span></span><span class="line"><span class="cl">	ShutdownNoSave() *StatusCmd
+</span></span><span class="line"><span class="cl">	SlaveOf(host, port string) *StatusCmd
+</span></span><span class="line"><span class="cl">	Time() *TimeCmd
+</span></span><span class="line"><span class="cl">	Eval(script string, keys []string, args ...interface{}) *Cmd
+</span></span><span class="line"><span class="cl">	EvalSha(sha1 string, keys []string, args ...interface{}) *Cmd
+</span></span><span class="line"><span class="cl">	ScriptExists(scripts ...string) *BoolSliceCmd
+</span></span><span class="line"><span class="cl">	ScriptFlush() *StatusCmd
+</span></span><span class="line"><span class="cl">	ScriptKill() *StatusCmd
+</span></span><span class="line"><span class="cl">	ScriptLoad(script string) *StringCmd
+</span></span><span class="line"><span class="cl">	DebugObject(key string) *StringCmd
+</span></span><span class="line"><span class="cl">	PubSubChannels(pattern string) *StringSliceCmd
+</span></span><span class="line"><span class="cl">	PubSubNumSub(channels ...string) *StringIntMapCmd
+</span></span><span class="line"><span class="cl">	PubSubNumPat() *IntCmd
+</span></span><span class="line"><span class="cl">	ClusterSlots() *ClusterSlotsCmd
+</span></span><span class="line"><span class="cl">	ClusterNodes() *StringCmd
+</span></span><span class="line"><span class="cl">	ClusterMeet(host, port string) *StatusCmd
+</span></span><span class="line"><span class="cl">	ClusterForget(nodeID string) *StatusCmd
+</span></span><span class="line"><span class="cl">	ClusterReplicate(nodeID string) *StatusCmd
+</span></span><span class="line"><span class="cl">	ClusterResetSoft() *StatusCmd
+</span></span><span class="line"><span class="cl">	ClusterResetHard() *StatusCmd
+</span></span><span class="line"><span class="cl">	ClusterInfo() *StringCmd
+</span></span><span class="line"><span class="cl">	ClusterKeySlot(key string) *IntCmd
+</span></span><span class="line"><span class="cl">	ClusterCountFailureReports(nodeID string) *IntCmd
+</span></span><span class="line"><span class="cl">	ClusterCountKeysInSlot(slot int) *IntCmd
+</span></span><span class="line"><span class="cl">	ClusterDelSlots(slots ...int) *StatusCmd
+</span></span><span class="line"><span class="cl">	ClusterDelSlotsRange(min, max int) *StatusCmd
+</span></span><span class="line"><span class="cl">	ClusterSaveConfig() *StatusCmd
+</span></span><span class="line"><span class="cl">	ClusterSlaves(nodeID string) *StringSliceCmd
+</span></span><span class="line"><span class="cl">	ClusterFailover() *StatusCmd
+</span></span><span class="line"><span class="cl">	ClusterAddSlots(slots ...int) *StatusCmd
+</span></span><span class="line"><span class="cl">	ClusterAddSlotsRange(min, max int) *StatusCmd
+</span></span><span class="line"><span class="cl">	GeoAdd(key string, geoLocation ...*GeoLocation) *IntCmd
+</span></span><span class="line"><span class="cl">	GeoPos(key string, members ...string) *GeoPosCmd
+</span></span><span class="line"><span class="cl">	GeoRadius(key string, longitude, latitude float64, query *GeoRadiusQuery) *GeoLocationCmd
+</span></span><span class="line"><span class="cl">	GeoRadiusByMember(key, member string, query *GeoRadiusQuery) *GeoLocationCmd
+</span></span><span class="line"><span class="cl">	GeoDist(key string, member1, member2, unit string) *FloatCmd
+</span></span><span class="line"><span class="cl">	GeoHash(key string, members ...string) *StringSliceCmd
+</span></span><span class="line"><span class="cl">	Command() *CommandsInfoCmd
+</span></span><span class="line"><span class="cl">}
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>我们看到了 Cmdable 这个接口其实就是实现了 redis 命令的封装。</p>
+<p>我们接着看 baseClient</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">type baseClient struct {
+</span></span><span class="line"><span class="cl">	connPool pool.Pooler
+</span></span><span class="line"><span class="cl">	opt      *Options
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	onClose func() error // hook called when client is closed
+</span></span><span class="line"><span class="cl">}
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>baseClient 引用了连接池，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="media/14778030546128.jpg"
+        data-srcset="media/14778030546128.jpg, media/14778030546128.jpg 1.5x, media/14778030546128.jpg 2x"
+        data-sizes="auto"
+        alt="media/14778030546128.jpg"
+        title="media/14778030546128.jpg" /></p>
+<p>我们接着往下看 redis.go 这个文件</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">func (c *baseClient) Process(cmd Cmder) error {
+</span></span><span class="line"><span class="cl">	for i := 0; i &lt;= c.opt.MaxRetries; i++ {
+</span></span><span class="line"><span class="cl">		if i &gt; 0 {
+</span></span><span class="line"><span class="cl">			cmd.reset()
+</span></span><span class="line"><span class="cl">		}
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">		cn, _, err := c.conn()
+</span></span><span class="line"><span class="cl">		if err != nil {
+</span></span><span class="line"><span class="cl">			cmd.setErr(err)
+</span></span><span class="line"><span class="cl">			return err
+</span></span><span class="line"><span class="cl">		}
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">		readTimeout := cmd.readTimeout()
+</span></span><span class="line"><span class="cl">		if readTimeout != nil {
+</span></span><span class="line"><span class="cl">			cn.ReadTimeout = *readTimeout
+</span></span><span class="line"><span class="cl">		} else {
+</span></span><span class="line"><span class="cl">			cn.ReadTimeout = c.opt.ReadTimeout
+</span></span><span class="line"><span class="cl">		}
+</span></span><span class="line"><span class="cl">		cn.WriteTimeout = c.opt.WriteTimeout
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">		if err := writeCmd(cn, cmd); err != nil {
+</span></span><span class="line"><span class="cl">			c.putConn(cn, err, false)
+</span></span><span class="line"><span class="cl">			cmd.setErr(err)
+</span></span><span class="line"><span class="cl">			if err != nil &amp;&amp; internal.IsRetryableError(err) {
+</span></span><span class="line"><span class="cl">				continue
+</span></span><span class="line"><span class="cl">			}
+</span></span><span class="line"><span class="cl">			return err
+</span></span><span class="line"><span class="cl">		}
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">		err = cmd.readReply(cn)
+</span></span><span class="line"><span class="cl">		c.putConn(cn, err, readTimeout != nil)
+</span></span><span class="line"><span class="cl">		if err != nil &amp;&amp; internal.IsRetryableError(err) {
+</span></span><span class="line"><span class="cl">			continue
+</span></span><span class="line"><span class="cl">		}
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">		return err
+</span></span><span class="line"><span class="cl">	}
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	return cmd.Err()
+</span></span><span class="line"><span class="cl">}
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>发现 baseClient 有个 Process 方法 这个应该是处理执行的过程 需要我们注意。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="media/14778049112136.jpg"
+        data-srcset="media/14778049112136.jpg, media/14778049112136.jpg 1.5x, media/14778049112136.jpg 2x"
+        data-sizes="auto"
+        alt="media/14778049112136.jpg"
+        title="media/14778049112136.jpg" /></p>
+<p>根据广度优先原则，我们再看 Client 上还有什么关联的内容</p>
+<p>我们可以看到 redis.go 这个文件里面 还包含了 Pipeline 和 pubSub 两个函数</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">func (c *Client) Pipeline() *Pipeline {
+</span></span><span class="line"><span class="cl">}
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">func (c *Client) pubSub() *PubSub {
+</span></span><span class="line"><span class="cl">}
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="media/14778093207234.jpg"
+        data-srcset="media/14778093207234.jpg, media/14778093207234.jpg 1.5x, media/14778093207234.jpg 2x"
+        data-sizes="auto"
+        alt="media/14778093207234.jpg"
+        title="media/14778093207234.jpg" /></p>
+<p>然后我们再看下，项目文件，还有什么我们并没有涉及到的</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"> $ ls                                                                                                                     
+</span></span><span class="line"><span class="cl">CHANGELOG.md   cluster_client_test.go  doc.go            main_test.go      pubsub.go       ring.go           tx.go
+</span></span><span class="line"><span class="cl">LICENSE        cluster_test.go         example_test.go   options.go        pubsub_test.go  ring_test.go      tx_test.go
+</span></span><span class="line"><span class="cl">Makefile       command.go              export_test.go    parser.go         race_test.go    script.go
+</span></span><span class="line"><span class="cl">README.md      command_test.go         internal/         pipeline.go       redis.go        sentinel.go
+</span></span><span class="line"><span class="cl">bench_test.go  commands.go             iterator.go       pipeline_test.go  redis_test.go   sentinel_test.go
+</span></span><span class="line"><span class="cl">cluster.go     commands_test.go        iterator_test.go  pool_test.go      result.go       testdata/
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>答案就是 cluster，cluster 是连接 redis 集群的方式，会提供给用户使用</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/media/14779019374152.jpg"
+        data-srcset="/media/14779019374152.jpg, /media/14779019374152.jpg 1.5x, /media/14779019374152.jpg 2x"
+        data-sizes="auto"
+        alt="/media/14779019374152.jpg"
+        title="/media/14779019374152.jpg" /></p>
+<p>我们详细看一下 cluster 源码，cluster 里面有自己的 Options，值得注意的是，有 Node 逻辑</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">type clusterNode struct {
+</span></span><span class="line"><span class="cl">	Client  *Client
+</span></span><span class="line"><span class="cl">	Latency time.Duration
+</span></span><span class="line"><span class="cl">	loading time.Time
+</span></span><span class="line"><span class="cl">}
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>使用组合的方式把 Client 包装进来。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"></code></pre></td></tr></table>
+</div>
+</div><p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/media/14779085735522.jpg"
+        data-srcset="/media/14779085735522.jpg, /media/14779085735522.jpg 1.5x, /media/14779085735522.jpg 2x"
+        data-sizes="auto"
+        alt="/media/14779085735522.jpg"
+        title="/media/14779085735522.jpg" /></p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2016-10-30</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/posts/%E5%88%86%E6%9E%90go-redis%E5%BA%93%E6%BA%90%E7%A0%81/index.md" target="_blank">Read Markdown</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://zbing3.github.com/posts/%E5%88%86%E6%9E%90go-redis%E5%BA%93%E6%BA%90%E7%A0%81/" data-title="分析go-redis库源码"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://zbing3.github.com/posts/%E5%88%86%E6%9E%90go-redis%E5%BA%93%E6%BA%90%E7%A0%81/"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://zbing3.github.com/posts/%E5%88%86%E6%9E%90go-redis%E5%BA%93%E6%BA%90%E7%A0%81/" data-title="分析go-redis库源码"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="https://zbing3.github.com/posts/%E5%88%86%E6%9E%90go-redis%E5%BA%93%E6%BA%90%E7%A0%81/" data-title="分析go-redis库源码"><i data-svg-src="/lib/simple-icons/icons/line.min.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="https://zbing3.github.com/posts/%E5%88%86%E6%9E%90go-redis%E5%BA%93%E6%BA%90%E7%A0%81/" data-title="分析go-redis库源码"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/%E4%BD%BF%E7%94%A8-nginx-x-accel-redirect-%E4%BF%9D%E6%8A%A4%E4%BD%A0%E7%9A%84%E9%9D%99%E6%80%81%E6%96%87%E4%BB%B6/" class="prev" rel="prev" title="使用 nginx x-accell-redirect 保护你的静态文件"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>使用 nginx x-accell-redirect 保护你的静态文件</a>
+            <a href="/posts/0-%E6%90%AD%E5%BB%BA%E7%8E%AF%E5%A2%83/" class="next" rel="next" title="0.搭建环境">0.搭建环境<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.119.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2013 - 2023</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">皓禹</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script type="text/javascript" src="/lib/autocomplete/autocomplete.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.min.js"></script><script type="text/javascript" src="/lib/lazysizes/lazysizes.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="/lib/sharer/sharer.min.js"></script><script type="text/javascript" src="/lib/katex/katex.min.js"></script><script type="text/javascript" src="/lib/katex/contrib/auto-render.min.js"></script><script type="text/javascript" src="/lib/katex/contrib/copy-tex.min.js"></script><script type="text/javascript" src="/lib/katex/contrib/mhchem.min.js"></script><script type="text/javascript" src="/lib/cookieconsent/cookieconsent.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":50},"comment":{},"cookieconsent":{"content":{"dismiss":"Got it!","link":"Learn more","message":"This website uses Cookies to improve your experience."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>
