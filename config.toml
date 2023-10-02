@@ -315,7 +315,7 @@ copyright = ""            # default: author.name ↓        # 默认为下面配
       # whether to enable the table of the contents
       enable = true
       #  whether to keep the static table of the contents in front of the post
-      keepStatic = true
+      keepStatic = false
       # whether to make the table of the contents in the sidebar automatically collapsed
       auto = true
     #  KaTeX mathematical formulas
