@@ -315,7 +315,7 @@ copyright = ""            # default: author.name ↓        # 默认为下面配
       # whether to enable the table of the contents
       enable = true
       #  whether to keep the static table of the contents in front of the post
-      keepStatic = false
+      keepStatic = false # true toc 会在文章前面
       # whether to make the table of the contents in the sidebar automatically collapsed
       auto = true
     #  KaTeX mathematical formulas
@@ -381,7 +381,7 @@ copyright = ""            # default: author.name ↓        # 默认为下面配
       Mix = false
     #  Comment config
     [params.page.comment]
-      enable = false
+      enable = true
       # Disqus comment config
       [params.page.comment.disqus]
         # 
@@ -441,9 +441,9 @@ copyright = ""            # default: author.name ↓        # 默认为下面配
         enable = false
       #  utterances comment config
       [params.page.comment.utterances]
-        enable = false
+        enable = true
         # owner/repo
-        repo = ""
+        repo = "zbing3/opslinux-comment"
         issueTerm = "pathname"
         label = ""
         lightTheme = "github-light"
