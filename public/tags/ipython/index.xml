@@ -1,14 +1,15 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
         <title>ipython - Tag - 创e - 皓禹</title>
-        <link>http://zbing3.github.com/tags/ipython/</link>
+        <link>https://zbing3.github.com/tags/ipython/</link>
         <description>ipython - Tag - 创e - 皓禹</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Sun, 18 May 2014 10:11:24 &#43;0000</lastBuildDate><atom:link href="http://zbing3.github.com/tags/ipython/" rel="self" type="application/rss+xml" /><item>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>zbing3@gmail.com (皓禹)</managingEditor>
+            <webMaster>zbing3@gmail.com (皓禹)</webMaster><lastBuildDate>Sun, 18 May 2014 10:11:24 &#43;0000</lastBuildDate><atom:link href="https://zbing3.github.com/tags/ipython/" rel="self" type="application/rss+xml" /><item>
     <title>安装ipython</title>
-    <link>http://zbing3.github.com/2014/05/18/%E5%AE%89%E8%A3%85ipython/</link>
+    <link>https://zbing3.github.com/2014/05/18/%E5%AE%89%E8%A3%85ipython/</link>
     <pubDate>Sun, 18 May 2014 10:11:24 &#43;0000</pubDate>
     <author>皓禹</author>
-    <guid>http://zbing3.github.com/2014/05/18/%E5%AE%89%E8%A3%85ipython/</guid>
+    <guid>https://zbing3.github.com/2014/05/18/%E5%AE%89%E8%A3%85ipython/</guid>
     <description><![CDATA[今天看到有朋友在用ipython，我也好久没用了，索性装一下 环境为MacOS Python 2.7.5 1 pip install readline ipython 安装完成，输入ipython进入：]]></description>
 </item>
 </channel>
