@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Django使用两个以上mysql数据库 - 创e - 皓禹</title><meta name="Description" content="一切伟大的行动和思想都有一个微不足道的开始"><meta property="og:title" content="Django使用两个以上mysql数据库" />
+<meta property="og:description" content="看了Django的官方文档，关于model这有介绍Multiple databases，但是没有介绍超过两个数据库的连接情况，这里我用mysq" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://zbing3.github.com/2014/11/20/Django%E4%BD%BF%E7%94%A8%E4%B8%A4%E4%B8%AA%E4%BB%A5%E4%B8%8Amysql%E6%95%B0%E6%8D%AE%E5%BA%93/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2014-11-20T17:11:04+00:00" />
+<meta property="article:modified_time" content="2014-11-20T17:11:04+00:00" /><meta property="og:site_name" content="My cool site" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Django使用两个以上mysql数据库"/>
+<meta name="twitter:description" content="看了Django的官方文档，关于model这有介绍Multiple databases，但是没有介绍超过两个数据库的连接情况，这里我用mysq"/>
+<meta name="application-name" content="My cool site">
+<meta name="apple-mobile-web-app-title" content="My cool site"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://zbing3.github.com/2014/11/20/Django%E4%BD%BF%E7%94%A8%E4%B8%A4%E4%B8%AA%E4%BB%A5%E4%B8%8Amysql%E6%95%B0%E6%8D%AE%E5%BA%93/" /><link rel="prev" href="http://zbing3.github.com/2014/09/02/%E8%B0%88%E5%B7%A5%E4%BD%9C%E8%B0%88%E6%8A%80%E6%9C%AF%E8%B0%88%E8%A7%86%E9%A2%91/" /><link rel="next" href="http://zbing3.github.com/2014/11/25/Python-is%E7%9A%84%E4%BD%BF%E7%94%A8/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Django使用两个以上mysql数据库",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "http:\/\/zbing3.github.com\/2014\/11\/20\/Django%E4%BD%BF%E7%94%A8%E4%B8%A4%E4%B8%AA%E4%BB%A5%E4%B8%8Amysql%E6%95%B0%E6%8D%AE%E5%BA%93\/"
+        },"genre": "post","keywords": "Django, mysql","wordcount":  699 ,
+        "url": "http:\/\/zbing3.github.com\/2014\/11\/20\/Django%E4%BD%BF%E7%94%A8%E4%B8%A4%E4%B8%AA%E4%BB%A5%E4%B8%8Amysql%E6%95%B0%E6%8D%AE%E5%BA%93\/","datePublished": "2014-11-20T17:11:04+00:00","dateModified": "2014-11-20T17:11:04+00:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "皓禹"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="创e - 皓禹">My cool site</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/"> Home </a><a class="menu-item" href="/post/"> Archives </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="创e - 皓禹">My cool site</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><a class="menu-item" href="/" title="">Home</a><a class="menu-item" href="/post/" title="">Archives</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><main class="main">
+                <div class="container"><div class="page single special"><h1 class="single-title animate__animated animate__pulse animate__faster">Django使用两个以上mysql数据库</h1><div class="content" id="content"><p>看了Django的官方文档，关于model这有介绍Multiple databases，但是没有介绍超过两个数据库的连接情况，这里我用mysql举例子，连接3个mysql数据库。估计这么用的不多哈哈哈，我们的需求比较复杂两个mysql上的都是公用数据，然后默认的数据库是我项目使用的数据库，保存着自己项目的账户系统和使用的一些信息。</p>
+<h2 id="settingspyid1"><a href="#id1" rel="">settings.py</a></h2>
+<p>下面是settings文件的配置，添加三个数据库，default为本项目自己的数据库，剩下两个为外部数据库</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">DATABASES = {
+</span></span><span class="line"><span class="cl">    &#39;default&#39;: {
+</span></span><span class="line"><span class="cl">        &#39;ENGINE&#39;: &#39;django.db.backends.mysql&#39;,
+</span></span><span class="line"><span class="cl">        &#39;NAME&#39;: &#39;my_db&#39;,
+</span></span><span class="line"><span class="cl">        &#39;USER&#39;: &#39;root&#39;,
+</span></span><span class="line"><span class="cl">        &#39;PASSWORD&#39;: &#39;123456&#39;,
+</span></span><span class="line"><span class="cl">        &#39;HOST&#39;: &#39;127.0.0.1&#39;,
+</span></span><span class="line"><span class="cl">        &#39;PORT&#39;: &#39;3306&#39;,
+</span></span><span class="line"><span class="cl">    },
+</span></span><span class="line"><span class="cl">    &#39;web_db&#39;: {
+</span></span><span class="line"><span class="cl">        &#39;ENGINE&#39;: &#39;django.db.backends.mysql&#39;,
+</span></span><span class="line"><span class="cl">        &#39;NAME&#39;: &#39;web_db&#39;,
+</span></span><span class="line"><span class="cl">        &#39;USER&#39;: &#39;root&#39;,
+</span></span><span class="line"><span class="cl">        &#39;PASSWORD&#39;: &#39;123456&#39;,
+</span></span><span class="line"><span class="cl">        &#39;HOST&#39;: &#39;127.0.0.1&#39;,
+</span></span><span class="line"><span class="cl">        &#39;PORT&#39;: &#39;3306&#39;,
+</span></span><span class="line"><span class="cl">    },
+</span></span><span class="line"><span class="cl">    &#39;admin_db&#39;: {
+</span></span><span class="line"><span class="cl">        &#39;ENGINE&#39;: &#39;django.db.backends.mysql&#39;,
+</span></span><span class="line"><span class="cl">        &#39;NAME&#39;: &#39;admin_db&#39;,
+</span></span><span class="line"><span class="cl">        &#39;USER&#39;: &#39;root&#39;,
+</span></span><span class="line"><span class="cl">        &#39;PASSWORD&#39;: &#39;123456&#39;,
+</span></span><span class="line"><span class="cl">        &#39;HOST&#39;: &#39;127.0.0.1&#39;,
+</span></span><span class="line"><span class="cl">        &#39;PORT&#39;: &#39;3306&#39;,
+</span></span><span class="line"><span class="cl">    },
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">}
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="routerid2"><a href="#id2" rel="">router</a></h2>
+<p>根据官方文档提示需要自己写个router文件，我的修改如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class AuthRouter(object):
+</span></span><span class="line"><span class="cl">    &#34;&#34;&#34; 控制 adminapp 应用中模型的
+</span></span><span class="line"><span class="cl">    所有数据库操作的路由 &#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def db_for_read(self, model, **hints):
+</span></span><span class="line"><span class="cl">        if model._meta.app_label == &#39;adminapp&#39;:
+</span></span><span class="line"><span class="cl">            return &#39;admin_db&#39;
+</span></span><span class="line"><span class="cl">        elif model._meta.app_label == &#39;webapp&#39;:
+</span></span><span class="line"><span class="cl">            return &#39;web_db&#39;
+</span></span><span class="line"><span class="cl">        return None
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def db_for_write(self, model, **hints):
+</span></span><span class="line"><span class="cl">        if model._meta.app_label == &#39;adminapp&#39;:
+</span></span><span class="line"><span class="cl">            return &#39;admin_db&#39;
+</span></span><span class="line"><span class="cl">        elif model._meta.app_label == &#39;qingsong&#39;:
+</span></span><span class="line"><span class="cl">            return &#39;web_db&#39;
+</span></span><span class="line"><span class="cl">        return None
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def allow_relation(self, obj1, obj2, **hints):
+</span></span><span class="line"><span class="cl">        if obj1._meta.app_label == &#39;adminapp&#39; or obj2._meta.app_label == &#39;adminapp&#39;:
+</span></span><span class="line"><span class="cl">            return True
+</span></span><span class="line"><span class="cl">        elif obj1._meta.app_label == &#39;qingsong&#39; or obj2._meta.app_label == &#39;qingsong&#39;:
+</span></span><span class="line"><span class="cl">            return True
+</span></span><span class="line"><span class="cl">        return None
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def allow_syncdb(self, db, model):
+</span></span><span class="line"><span class="cl">        #django1.7
+</span></span><span class="line"><span class="cl">        print &#34;db:%s,model:%s&#34;%(db,model)
+</span></span><span class="line"><span class="cl">        print model._meta.app_label
+</span></span><span class="line"><span class="cl">        if db == &#39;admin_db&#39;:
+</span></span><span class="line"><span class="cl">            return model._meta.app_label == &#39;adminapp&#39;
+</span></span><span class="line"><span class="cl">        elif model._meta.app_label == &#39;adminapp&#39;:
+</span></span><span class="line"><span class="cl">            return False
+</span></span><span class="line"><span class="cl">        if db == &#39;qingsong_db&#39;:
+</span></span><span class="line"><span class="cl">            return model._meta.app_label == &#39;qingsong&#39;
+</span></span><span class="line"><span class="cl">        elif model._meta.app_label == &#39;qingsong&#39;:
+</span></span><span class="line"><span class="cl">            return False
+</span></span><span class="line"><span class="cl">        return None
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def allow_migrate(self, db, model):
+</span></span><span class="line"><span class="cl">        #django1.7
+</span></span><span class="line"><span class="cl">        if db == &#39;admin_db&#39;:
+</span></span><span class="line"><span class="cl">            return model._meta.app_label == &#39;adminapp&#39;
+</span></span><span class="line"><span class="cl">        elif model._meta.app_label == &#39;adminapp&#39;:
+</span></span><span class="line"><span class="cl">            return False
+</span></span><span class="line"><span class="cl">        return None
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>然后根据官方文档在settings中加入：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">DATABASE_ROUTERS = [&#39;path.to.AuthRouter&#39;, &#39;path.to.PrimaryReplicaRouter&#39;]
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="model中的使用id3"><a href="#id3" rel="">model中的使用</a></h2>
+<p>关于app_label在1.6和1.7中使用稍有不同，官方文档有详细记载，这里我举例Django1.6的方式：</p>
+<p>在model中加入app_label标签，这个model属于哪个数据库，写上数据库的名字（settings.py文件中的名字），例如：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class Test(models.Model):
+</span></span><span class="line"><span class="cl">    name=models.CharField(max_length=30, unique=True)
+</span></span><span class="line"><span class="cl">    class Meta:
+</span></span><span class="line"><span class="cl">        db_table = &#39;test&#39;
+</span></span><span class="line"><span class="cl">        app_label = &#39;adminapp&#39;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def __unicode__(self):
+</span></span><span class="line"><span class="cl">        return self.name
+</span></span></code></pre></td></tr></table>
+</div>
+</div></div></div></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.119.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022 - 2023</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">皓禹</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":50},"comment":{}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

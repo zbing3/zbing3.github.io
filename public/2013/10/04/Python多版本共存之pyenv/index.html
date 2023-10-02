@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Python多版本共存之pyenv - 创e - 皓禹</title><meta name="Description" content="一切伟大的行动和思想都有一个微不足道的开始"><meta property="og:title" content="Python多版本共存之pyenv" />
+<meta property="og:description" content="需要使用新版本Python的相关功能，但是又不想要影响到系统自带的Python，这个时候就需要实现Python的多版本共存。 pyenv可以很" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://zbing3.github.com/2013/10/04/Python%E5%A4%9A%E7%89%88%E6%9C%AC%E5%85%B1%E5%AD%98%E4%B9%8Bpyenv/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2013-10-04T00:27:00+00:00" />
+<meta property="article:modified_time" content="2013-10-04T00:27:00+00:00" /><meta property="og:site_name" content="My cool site" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Python多版本共存之pyenv"/>
+<meta name="twitter:description" content="需要使用新版本Python的相关功能，但是又不想要影响到系统自带的Python，这个时候就需要实现Python的多版本共存。 pyenv可以很"/>
+<meta name="application-name" content="My cool site">
+<meta name="apple-mobile-web-app-title" content="My cool site"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://zbing3.github.com/2013/10/04/Python%E5%A4%9A%E7%89%88%E6%9C%AC%E5%85%B1%E5%AD%98%E4%B9%8Bpyenv/" /><link rel="prev" href="http://zbing3.github.com/2013/09/14/%E4%BD%BF%E7%94%A8Vagrant%E6%89%93%E9%80%A0%E4%BD%A0%E7%9A%84%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83/" /><link rel="next" href="http://zbing3.github.com/2013/11/01/python%E4%B8%AD%E7%9A%84urlencode%E4%B8%8Eurldecode/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Python多版本共存之pyenv",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "http:\/\/zbing3.github.com\/2013\/10\/04\/Python%E5%A4%9A%E7%89%88%E6%9C%AC%E5%85%B1%E5%AD%98%E4%B9%8Bpyenv\/"
+        },"genre": "post","keywords": "python","wordcount":  680 ,
+        "url": "http:\/\/zbing3.github.com\/2013\/10\/04\/Python%E5%A4%9A%E7%89%88%E6%9C%AC%E5%85%B1%E5%AD%98%E4%B9%8Bpyenv\/","datePublished": "2013-10-04T00:27:00+00:00","dateModified": "2013-10-04T00:27:00+00:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "皓禹"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="创e - 皓禹">My cool site</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/"> Home </a><a class="menu-item" href="/post/"> Archives </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categories </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="创e - 皓禹">My cool site</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><a class="menu-item" href="/" title="">Home</a><a class="menu-item" href="/post/" title="">Archives</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categories</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><main class="main">
+                <div class="container"><div class="page single special"><h1 class="single-title animate__animated animate__pulse animate__faster">Python多版本共存之pyenv</h1><div class="content" id="content"><p>需要使用新版本Python的相关功能，但是又不想要影响到系统自带的Python，这个时候就需要实现Python的多版本共存。</p>
+<p><a href="https://github.com/yyuu/pyenv" target="_blank" rel="noopener noreffer ">pyenv</a>可以很好的实现Python的多版本共存。</p>
+<h2 id="安装pyenv">安装pyenv</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">$ git clone git://github.com/yyuu/pyenv.git ~/.pyenv
+</span></span><span class="line"><span class="cl">$ echo &#39;export PYENV_ROOT=&#34;$HOME/.pyenv&#34;&#39; &gt;&gt; ~/.bashrc
+</span></span><span class="line"><span class="cl">$ echo &#39;export PATH=&#34;$PYENV_ROOT/bin:$PATH&#34;&#39; &gt;&gt; ~/.bashrc
+</span></span><span class="line"><span class="cl">$ echo &#39;eval &#34;$(pyenv init -)&#34;&#39; &gt;&gt; ~/.bashrc
+</span></span><span class="line"><span class="cl">$ exec $SHELL -l
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="安装python">安装Python</h2>
+<h3 id="查看可安装的版本">查看可安装的版本</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">$ pyenv install --list
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="安装指定版本">安装指定版本</h3>
+<p>使用如下命令即可安装python 3.3.2.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">$ pyenv install 3.3.2
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>该命令会从github上下载python的源代码，并解压到/tmp目录下，然后在/tmp中执行编译工作。编译过程依赖一些其他的库文件，若库文件不能满足，则编译错误，需要重新下载、编译。。。(为什么每次都要重新下呢？)</p>
+<p>已知的一些需要预先安装的库包括：</p>
+<ul>
+<li>readline readline-devel readline-static</li>
+<li>openssl openssl-devel openssl-static</li>
+<li>sqlite-devel</li>
+<li>bzip2-devel bzip2-libs</li>
+</ul>
+<p>在所有python依赖库都安装好的情况下，python的安装很顺利。</p>
+<h3 id="更新数据库">更新数据库</h3>
+<p>安装完成之后需要对数据库进行更新：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">$ pyenv rehash
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="查看当前已安装的python版本">查看当前已安装的python版本</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">$ pyenv versions
+</span></span><span class="line"><span class="cl">* system (set by /export/home/seisman/.pyenv/version)
+</span></span><span class="line"><span class="cl">3.3.2
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>其中的星号表示使用的是系统自带的python。</p>
+<h3 id="设置全局的python版本">设置全局的python版本</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">$ pyenv global 3.3.2
+</span></span><span class="line"><span class="cl">$ pyenv versions
+</span></span><span class="line"><span class="cl">system
+</span></span><span class="line"><span class="cl">* 3.3.2 (set by /export/home/seisman/.pyenv/version)
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>当前全局的python版本已经变成了3.3.2。也可以使用<!-- raw HTML omitted -->pyenv local<!-- raw HTML omitted -->或<!-- raw HTML omitted -->pyenv shell<!-- raw HTML omitted -->临时改变python版本。</p>
+<h3 id="确认python版本">确认python版本</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">$ python
+</span></span><span class="line"><span class="cl">Python 3.3.2 (default, Sep 30 2013, 20:11:44)
+</span></span><span class="line"><span class="cl">[GCC 4.4.7 20120313 (Red Hat 4.4.7-3)] on linux
+</span></span><span class="line"><span class="cl">Type &#34;help&#34;, &#34;copyright&#34;, &#34;credits&#34; or &#34;license&#34; for more information.
+</span></span><span class="line"><span class="cl">&gt;&gt;&gt;
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="使用python">使用python</h2>
+<ul>
+<li>输入<!-- raw HTML omitted -->python<!-- raw HTML omitted -->即可使用新版本的python；</li>
+<li>系统命令会以/usr/bin/python的方式直接调用老版本的python；</li>
+<li>使用pip安装第三方模块时会安装到~/.pyenv/versions/3.3.2下，不会和系统模块发生冲突。</li>
+</ul>
+</div></div></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.119.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022 - 2023</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">皓禹</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":50},"comment":{}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>
