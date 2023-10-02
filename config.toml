@@ -616,7 +616,7 @@ copyright = ""            # default: author.name ↓        # 默认为下面配
 # Options to make hugo output files
 [outputs]
   home = ["HTML", "RSS", "JSON"]
-  page = ["HTML", "MarkDown"]
+  page = ["HTML"]
   section = ["HTML", "RSS"]
   taxonomy = ["HTML", "RSS"]
   taxonomyTerm = ["HTML"]

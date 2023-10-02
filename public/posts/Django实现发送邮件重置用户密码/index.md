@@ -62,7 +62,7 @@ password_reset_form.html
 
 可根据自己的需求进行定义我在这里面，就把logged_out.html文件删除了，加入了自己写的 login.html ，然后将所有文件中的
 
-```	
+```python
 {% extends admin/base_site.html %} 
 改为
 {% extends base.html %}
@@ -72,7 +72,7 @@ password_reset_form.html
 这样做完还是不能用的，因为需要base.html文件:
 
 
-```
+```html
 <html>
 <head>
     <title>{% block title %}{% endblock title %}</title>
