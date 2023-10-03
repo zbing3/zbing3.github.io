@@ -1,15 +1,15 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
         <title>kafka - Tag - 创e - 皓禹</title>
-        <link>https://zbing3.github.com/tags/kafka/</link>
+        <link>https://zbing3.github.io/tags/kafka/</link>
         <description>kafka - Tag - 创e - 皓禹</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>zbing3@gmail.com (皓禹)</managingEditor>
-            <webMaster>zbing3@gmail.com (皓禹)</webMaster><lastBuildDate>Tue, 14 Jul 2015 09:56:03 &#43;0000</lastBuildDate><atom:link href="https://zbing3.github.com/tags/kafka/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>zbing3@gmail.com (皓禹)</webMaster><lastBuildDate>Tue, 14 Jul 2015 09:56:03 &#43;0000</lastBuildDate><atom:link href="https://zbing3.github.io/tags/kafka/" rel="self" type="application/rss+xml" /><item>
     <title>python连接kafka</title>
-    <link>https://zbing3.github.com/posts/python%E8%BF%9E%E6%8E%A5kafka/</link>
+    <link>https://zbing3.github.io/posts/python%E8%BF%9E%E6%8E%A5kafka/</link>
     <pubDate>Tue, 14 Jul 2015 09:56:03 &#43;0000</pubDate>
     <author>皓禹</author>
-    <guid>https://zbing3.github.com/posts/python%E8%BF%9E%E6%8E%A5kafka/</guid>
+    <guid>https://zbing3.github.io/posts/python%E8%BF%9E%E6%8E%A5kafka/</guid>
     <description><![CDATA[最近项目中总是跟java配合，我一个写python的程序员，面对有复杂数据结构的java代码转换成python代码，确实是一大难题，有时候或]]></description>
 </item>
 </channel>

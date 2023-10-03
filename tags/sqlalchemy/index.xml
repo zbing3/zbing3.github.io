@@ -1,15 +1,15 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
         <title>sqlalchemy - Tag - 创e - 皓禹</title>
-        <link>https://zbing3.github.com/tags/sqlalchemy/</link>
+        <link>https://zbing3.github.io/tags/sqlalchemy/</link>
         <description>sqlalchemy - Tag - 创e - 皓禹</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>zbing3@gmail.com (皓禹)</managingEditor>
-            <webMaster>zbing3@gmail.com (皓禹)</webMaster><lastBuildDate>Wed, 19 Feb 2014 11:17:00 &#43;0000</lastBuildDate><atom:link href="https://zbing3.github.com/tags/sqlalchemy/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>zbing3@gmail.com (皓禹)</webMaster><lastBuildDate>Wed, 19 Feb 2014 11:17:00 &#43;0000</lastBuildDate><atom:link href="https://zbing3.github.io/tags/sqlalchemy/" rel="self" type="application/rss+xml" /><item>
     <title>sqlalchemy查询返回json数据</title>
-    <link>https://zbing3.github.com/posts/sqlalchemy%E6%9F%A5%E8%AF%A2%E8%BF%94%E5%9B%9Ejson%E6%95%B0%E6%8D%AE/</link>
+    <link>https://zbing3.github.io/posts/sqlalchemy%E6%9F%A5%E8%AF%A2%E8%BF%94%E5%9B%9Ejson%E6%95%B0%E6%8D%AE/</link>
     <pubDate>Wed, 19 Feb 2014 11:17:00 &#43;0000</pubDate>
     <author>皓禹</author>
-    <guid>https://zbing3.github.com/posts/sqlalchemy%E6%9F%A5%E8%AF%A2%E8%BF%94%E5%9B%9Ejson%E6%95%B0%E6%8D%AE/</guid>
+    <guid>https://zbing3.github.io/posts/sqlalchemy%E6%9F%A5%E8%AF%A2%E8%BF%94%E5%9B%9Ejson%E6%95%B0%E6%8D%AE/</guid>
     <description><![CDATA[最近公司开发新项目使用tornado+mysql，传统的SQL开发方式大家都感觉不爽（其实我不太会，哈哈），所以开始使用orm方式，这也是p]]></description>
 </item>
 </channel>

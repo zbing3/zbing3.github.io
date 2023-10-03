@@ -61,4 +61,4 @@ Disallow: /
 User-agent: ZoominfoBot
 Disallow: /
 
-Sitemap: https://zbing3.github.com/sitemap.xml
+Sitemap: https://zbing3.github.io/sitemap.xml

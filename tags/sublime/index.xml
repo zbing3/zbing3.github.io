@@ -1,23 +1,23 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
         <title>sublime - Tag - 创e - 皓禹</title>
-        <link>https://zbing3.github.com/tags/sublime/</link>
+        <link>https://zbing3.github.io/tags/sublime/</link>
         <description>sublime - Tag - 创e - 皓禹</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>zbing3@gmail.com (皓禹)</managingEditor>
-            <webMaster>zbing3@gmail.com (皓禹)</webMaster><lastBuildDate>Tue, 26 Aug 2014 20:11:46 &#43;0000</lastBuildDate><atom:link href="https://zbing3.github.com/tags/sublime/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>zbing3@gmail.com (皓禹)</webMaster><lastBuildDate>Tue, 26 Aug 2014 20:11:46 &#43;0000</lastBuildDate><atom:link href="https://zbing3.github.io/tags/sublime/" rel="self" type="application/rss+xml" /><item>
     <title>sublime 支持开发 coffeescript compass sass</title>
-    <link>https://zbing3.github.com/posts/sublime-%E6%94%AF%E6%8C%81%E5%BC%80%E5%8F%91-coffeescript-compass-sass/</link>
+    <link>https://zbing3.github.io/posts/sublime-%E6%94%AF%E6%8C%81%E5%BC%80%E5%8F%91-coffeescript-compass-sass/</link>
     <pubDate>Tue, 26 Aug 2014 20:11:46 &#43;0000</pubDate>
     <author>皓禹</author>
-    <guid>https://zbing3.github.com/posts/sublime-%E6%94%AF%E6%8C%81%E5%BC%80%E5%8F%91-coffeescript-compass-sass/</guid>
+    <guid>https://zbing3.github.io/posts/sublime-%E6%94%AF%E6%8C%81%E5%BC%80%E5%8F%91-coffeescript-compass-sass/</guid>
     <description><![CDATA[没啥难的看我的节奏： 使用Shift + command + P调出命令面板： 输入 install 调出 Package Control: Install Package 选项，按下回车 在列表中分别找到 CoffeeScript，compa]]></description>
 </item>
 <item>
     <title>配置sublime打造python编辑器</title>
-    <link>https://zbing3.github.com/posts/%E9%85%8D%E7%BD%AEsublime%E6%89%93%E9%80%A0python%E7%BC%96%E8%BE%91%E5%99%A8/</link>
+    <link>https://zbing3.github.io/posts/%E9%85%8D%E7%BD%AEsublime%E6%89%93%E9%80%A0python%E7%BC%96%E8%BE%91%E5%99%A8/</link>
     <pubDate>Mon, 26 May 2014 09:46:24 &#43;0000</pubDate>
     <author>皓禹</author>
-    <guid>https://zbing3.github.com/posts/%E9%85%8D%E7%BD%AEsublime%E6%89%93%E9%80%A0python%E7%BC%96%E8%BE%91%E5%99%A8/</guid>
+    <guid>https://zbing3.github.io/posts/%E9%85%8D%E7%BD%AEsublime%E6%89%93%E9%80%A0python%E7%BC%96%E8%BE%91%E5%99%A8/</guid>
     <description><![CDATA[Contents 插件 Package Control SublimeCodeIntel插件 SublimeLinter Python PEP8 Autoformat GitGutter SideBarEnhancements 快捷键 昨晚长夜漫漫，无心睡眠，运维开发群里交谈不断，突然一位常用vim的同学想开速]]></description>
 </item>
 </channel>
