@@ -1,15 +1,15 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
         <title>zabbix - Tag - 创e - 皓禹</title>
-        <link>https://zbing3.github.com/tags/zabbix/</link>
+        <link>https://zbing3.github.io/tags/zabbix/</link>
         <description>zabbix - Tag - 创e - 皓禹</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>zbing3@gmail.com (皓禹)</managingEditor>
-            <webMaster>zbing3@gmail.com (皓禹)</webMaster><lastBuildDate>Mon, 09 Sep 2013 00:00:00 &#43;0000</lastBuildDate><atom:link href="https://zbing3.github.com/tags/zabbix/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>zbing3@gmail.com (皓禹)</webMaster><lastBuildDate>Mon, 09 Sep 2013 00:00:00 &#43;0000</lastBuildDate><atom:link href="https://zbing3.github.io/tags/zabbix/" rel="self" type="application/rss+xml" /><item>
     <title>zabbix监控mongoDB</title>
-    <link>https://zbing3.github.com/posts/zabbix%E7%9B%91%E6%8E%A7mongoDB/</link>
+    <link>https://zbing3.github.io/posts/zabbix%E7%9B%91%E6%8E%A7mongoDB/</link>
     <pubDate>Mon, 09 Sep 2013 00:00:00 &#43;0000</pubDate>
     <author>皓禹</author>
-    <guid>https://zbing3.github.com/posts/zabbix%E7%9B%91%E6%8E%A7mongoDB/</guid>
+    <guid>https://zbing3.github.io/posts/zabbix%E7%9B%91%E6%8E%A7mongoDB/</guid>
     <description><![CDATA[zabbix监控mongoDB 推荐文档： 官方推荐：http://docs.mongodb.org/manual/administration]]></description>
 </item>
 </channel>

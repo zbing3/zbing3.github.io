@@ -1,15 +1,15 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
         <title>mac - Tag - 创e - 皓禹</title>
-        <link>https://zbing3.github.com/tags/mac/</link>
+        <link>https://zbing3.github.io/tags/mac/</link>
         <description>mac - Tag - 创e - 皓禹</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>zbing3@gmail.com (皓禹)</managingEditor>
-            <webMaster>zbing3@gmail.com (皓禹)</webMaster><lastBuildDate>Mon, 09 May 2016 17:13:05 &#43;0000</lastBuildDate><atom:link href="https://zbing3.github.com/tags/mac/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>zbing3@gmail.com (皓禹)</webMaster><lastBuildDate>Mon, 09 May 2016 17:13:05 &#43;0000</lastBuildDate><atom:link href="https://zbing3.github.io/tags/mac/" rel="self" type="application/rss+xml" /><item>
     <title>mac快速生成干净的linux开发环境</title>
-    <link>https://zbing3.github.com/posts/mac%E5%BF%AB%E9%80%9F%E7%94%9F%E6%88%90%E5%B9%B2%E5%87%80%E7%9A%84linux%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/</link>
+    <link>https://zbing3.github.io/posts/mac%E5%BF%AB%E9%80%9F%E7%94%9F%E6%88%90%E5%B9%B2%E5%87%80%E7%9A%84linux%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/</link>
     <pubDate>Mon, 09 May 2016 17:13:05 &#43;0000</pubDate>
     <author>皓禹</author>
-    <guid>https://zbing3.github.com/posts/mac%E5%BF%AB%E9%80%9F%E7%94%9F%E6%88%90%E5%B9%B2%E5%87%80%E7%9A%84linux%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/</guid>
+    <guid>https://zbing3.github.io/posts/mac%E5%BF%AB%E9%80%9F%E7%94%9F%E6%88%90%E5%B9%B2%E5%87%80%E7%9A%84linux%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/</guid>
     <description><![CDATA[mac快速生成干净的linux开发环境 virtualbox -&gt; vagrant/completed -&gt; docker-root -&gt; docker -&gt; &hellip; ubuntu/alpine 安装vagrant 或者去官方下载 1 2 3 4 5 brew tap caskroom/cask #if not already installed brew install brew-cask #if not already installed brew cask install vagrant brew tap]]></description>
 </item>
 </channel>

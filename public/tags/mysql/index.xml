@@ -1,15 +1,15 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
         <title>mysql - Tag - 创e - 皓禹</title>
-        <link>https://zbing3.github.com/tags/mysql/</link>
+        <link>https://zbing3.github.io/tags/mysql/</link>
         <description>mysql - Tag - 创e - 皓禹</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>zbing3@gmail.com (皓禹)</managingEditor>
-            <webMaster>zbing3@gmail.com (皓禹)</webMaster><lastBuildDate>Thu, 20 Nov 2014 17:11:04 &#43;0000</lastBuildDate><atom:link href="https://zbing3.github.com/tags/mysql/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>zbing3@gmail.com (皓禹)</webMaster><lastBuildDate>Thu, 20 Nov 2014 17:11:04 &#43;0000</lastBuildDate><atom:link href="https://zbing3.github.io/tags/mysql/" rel="self" type="application/rss+xml" /><item>
     <title>Django使用两个以上mysql数据库</title>
-    <link>https://zbing3.github.com/posts/Django%E4%BD%BF%E7%94%A8%E4%B8%A4%E4%B8%AA%E4%BB%A5%E4%B8%8Amysql%E6%95%B0%E6%8D%AE%E5%BA%93/</link>
+    <link>https://zbing3.github.io/posts/Django%E4%BD%BF%E7%94%A8%E4%B8%A4%E4%B8%AA%E4%BB%A5%E4%B8%8Amysql%E6%95%B0%E6%8D%AE%E5%BA%93/</link>
     <pubDate>Thu, 20 Nov 2014 17:11:04 &#43;0000</pubDate>
     <author>皓禹</author>
-    <guid>https://zbing3.github.com/posts/Django%E4%BD%BF%E7%94%A8%E4%B8%A4%E4%B8%AA%E4%BB%A5%E4%B8%8Amysql%E6%95%B0%E6%8D%AE%E5%BA%93/</guid>
+    <guid>https://zbing3.github.io/posts/Django%E4%BD%BF%E7%94%A8%E4%B8%A4%E4%B8%AA%E4%BB%A5%E4%B8%8Amysql%E6%95%B0%E6%8D%AE%E5%BA%93/</guid>
     <description><![CDATA[看了Django的官方文档，关于model这有介绍Multiple databases，但是没有介绍超过两个数据库的连接情况，这里我用mysq]]></description>
 </item>
 </channel>

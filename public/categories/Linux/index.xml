@@ -1,15 +1,15 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
         <title>Linux - Category - 创e - 皓禹</title>
-        <link>https://zbing3.github.com/categories/Linux/</link>
+        <link>https://zbing3.github.io/categories/Linux/</link>
         <description>Linux - Category - 创e - 皓禹</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>zbing3@gmail.com (皓禹)</managingEditor>
-            <webMaster>zbing3@gmail.com (皓禹)</webMaster><lastBuildDate>Wed, 02 Jan 2013 09:15:36 &#43;0000</lastBuildDate><atom:link href="https://zbing3.github.com/categories/Linux/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>zbing3@gmail.com (皓禹)</webMaster><lastBuildDate>Wed, 02 Jan 2013 09:15:36 &#43;0000</lastBuildDate><atom:link href="https://zbing3.github.io/categories/Linux/" rel="self" type="application/rss+xml" /><item>
     <title>Test1</title>
-    <link>https://zbing3.github.com/posts/test/</link>
+    <link>https://zbing3.github.io/posts/test/</link>
     <pubDate>Wed, 02 Jan 2013 09:15:36 &#43;0000</pubDate>
     <author>皓禹</author>
-    <guid>https://zbing3.github.com/posts/test/</guid>
+    <guid>https://zbing3.github.io/posts/test/</guid>
     <description><![CDATA[test]]></description>
 </item>
 </channel>

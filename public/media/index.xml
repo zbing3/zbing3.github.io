@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Media on 创e - 皓禹</title>
-    <link>https://zbing3.github.com/media/</link>
+    <link>https://zbing3.github.io/media/</link>
     <description>Recent content in Media on 创e - 皓禹</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
     <managingEditor>zbing3@gmail.com (皓禹)</managingEditor>
-    <webMaster>zbing3@gmail.com (皓禹)</webMaster><atom:link href="https://zbing3.github.com/media/index.xml" rel="self" type="application/rss+xml" />
+    <webMaster>zbing3@gmail.com (皓禹)</webMaster><atom:link href="https://zbing3.github.io/media/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title></title>
-      <link>https://zbing3.github.com/media/API%E6%96%87%E6%A1%A3/</link>
+      <link>https://zbing3.github.io/media/API%E6%96%87%E6%A1%A3/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <author>zbing3@gmail.com (皓禹)</author>
-      <guid>https://zbing3.github.com/media/API%E6%96%87%E6%A1%A3/</guid>
+      <guid>https://zbing3.github.io/media/API%E6%96%87%E6%A1%A3/</guid>
       <description>[TOC] 基本说明 params 为HTTP请求为GET时需要传的参数 data 为HTTP请求为POST/PUT时需要传的参数 headers 为HTTP请求设置的header值 url_params 为UR</description>
     </item>
     
